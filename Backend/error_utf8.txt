@@ -1,0 +1,92 @@
+﻿[dotenv@17.3.1] injecting env (9) from .env -- tip: ≡ƒöÉ prevent building .env in docker: https://dotenvx.com/prebuild
+node : node:internal/m
+odules/cjs/loader:1210
+At line:1 char:1
++ node server.js *> 
+error.txt
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (node:inter   
+ nal/modules/cjs/l    
+oader:1210:String    
+) [], RemoteExcep    
+tion
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+  throw err;
+  ^
+
+Error: Cannot find 
+module 'streamifier'
+Require stack:
+- C:\Users\USER\OneDri
+ve\Desktop\Final Proje
+ct\backend\services\cl
+oudinary.js
+- C:\Users\USER\OneDri
+ve\Desktop\Final Proje
+ct\backend\routes\uplo
+ad.js
+- C:\Users\USER\OneDri
+ve\Desktop\Final Proje
+ct\backend\server.js
+    at Module._resolve
+Filename (node:interna
+l/modules/cjs/loader:1
+207:15)
+    at Module._load (n
+ode:internal/modules/c
+js/loader:1038:27)
+    at Module.require 
+(node:internal/modules
+/cjs/loader:1289:19)
+    at require (node:i
+nternal/modules/helper
+s:182:18)
+    at 
+Object.<anonymous> (C:
+\Users\USER\OneDrive\D
+esktop\Final Project\b
+ackend\services\cloudi
+nary.js:2:21)
+    at 
+Module._compile (node:
+internal/modules/cjs/l
+oader:1521:14)
+    at Module._extensi
+ons..js (node:internal
+/modules/cjs/loader:16
+23:10)
+    at Module.load (no
+de:internal/modules/cj
+s/loader:1266:32)
+    at Module._load (n
+ode:internal/modules/c
+js/loader:1091:12)
+    at Module.require 
+(node:internal/modules
+/cjs/loader:1289:19) {
+  code: 
+'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\USER\\
+OneDrive\\Desktop\\Fin
+al Project\\backend\\s
+ervices\\cloudinary.js
+',
+    'C:\\Users\\USER\\
+OneDrive\\Desktop\\Fin
+al Project\\backend\\r
+outes\\upload.js',
+    'C:\\Users\\USER\\
+OneDrive\\Desktop\\Fin
+al Project\\backend\\s
+erver.js'
+  ]
+}
+
+Node.js v20.20.0
