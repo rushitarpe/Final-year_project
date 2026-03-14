@@ -1,6 +1,7 @@
 const { StreamClient } = require('@stream-io/node-sdk');
 
-const client = new StreamClient(
+// Lazily create client so module-level errors don't crash the server
+const getClient = () => new StreamClient(
     process.env.STREAM_API_KEY,
     process.env.STREAM_API_SECRET
 );
@@ -10,6 +11,7 @@ const client = new StreamClient(
 // @access Private
 exports.getStreamToken = async (req, res) => {
     try {
+        const client = getClient();
         const userId = req.user._id.toString();
 
         // Upsert the user on Stream side
@@ -41,6 +43,7 @@ exports.getStreamToken = async (req, res) => {
 // @access Private
 exports.createCall = async (req, res) => {
     try {
+        const client = getClient();
         const { callId, callType = 'default' } = req.body;
         const userId = req.user._id.toString();
 

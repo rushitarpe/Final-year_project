@@ -66,7 +66,14 @@ const mentorSchema = new mongoose.Schema({
     hourlyRate: {
         type: Number,
         default: 0
-    }
+    },
+    warnings: [{
+        message: String,
+        date: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 });
 
 const Mentor = User.discriminator('mentor', mentorSchema);

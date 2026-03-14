@@ -131,6 +131,22 @@ exports.getMe = async (req, res, next) => {
     }
 };
 
+// @desc    Get all mentees for mentor lookup
+// @route   GET /api/auth/mentees
+// @access  Private
+exports.getAllMentees = async (req, res, next) => {
+    try {
+        const mentees = await Mentee.find({ role: 'mentee' }).select('firstName lastName _id profileImage');
+
+        res.status(200).json({
+            success: true,
+            data: mentees
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 // @desc    Firebase login
 // @route   POST /api/auth/firebase
 // @access  Public

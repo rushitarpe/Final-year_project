@@ -1,0 +1,36 @@
+﻿
+D:\Final Project\Frontend\src\components\3d\HeroGlobe.jsx
+  34:16  error  Unknown property 'position' found     react/no-unknown-property
+  36:27  error  Unknown property 'intensity' found    react/no-unknown-property
+  37:25  error  Unknown property 'position' found     react/no-unknown-property
+  37:63  error  Unknown property 'intensity' found    react/no-unknown-property
+  38:25  error  Unknown property 'position' found     react/no-unknown-property
+  38:64  error  Unknown property 'intensity' found    react/no-unknown-property
+  39:25  error  Unknown property 'position' found     react/no-unknown-property
+  39:63  error  Unknown property 'intensity' found    react/no-unknown-property
+  40:25  error  Unknown property 'position' found     react/no-unknown-property
+  40:62  error  Unknown property 'intensity' found    react/no-unknown-property
+  44:52  error  Unknown property 'transparent' found  react/no-unknown-property
+  44:79  error  Unknown property 'side' found         react/no-unknown-property
+  62:52  error  Unknown property 'transparent' found  react/no-unknown-property
+  67:52  error  Unknown property 'transparent' found  react/no-unknown-property
+  72:52  error  Unknown property 'transparent' found  react/no-unknown-property
+  77:52  error  Unknown property 'transparent' found  react/no-unknown-property
+  77:78  error  Unknown property 'side' found         react/no-unknown-property
+
+D:\Final Project\Frontend\src\components\3d\Particles.jsx
+  63:21  error  Unknown property 'attach' found           react/no-unknown-property
+  64:21  error  Unknown property 'count' found            react/no-unknown-property
+  65:21  error  Unknown property 'array' found            react/no-unknown-property
+  66:21  error  Unknown property 'itemSize' found         react/no-unknown-property
+  69:56  error  Unknown property 'sizeAttenuation' found  react/no-unknown-property
+  69:72  error  Unknown property 'transparent' found      react/no-unknown-property
+
+D:\Final Project\Frontend\src\components\chat\ChatbotWidget.jsx
+  218:49  warning  'idx' is defined but never used  no-unused-vars
+
+D:\Final Project\Frontend\src\components\ui\Modal.jsx
+  1:8  warning  'React' is defined but never used  no-unused-vars
+
+Γ£û 25 problems (23 errors, 2 warnings)
+

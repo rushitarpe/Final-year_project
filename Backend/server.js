@@ -50,6 +50,9 @@ const mentors = require('./routes/mentors');
 const admin = require('./routes/admin');
 const reviews = require('./routes/reviews');
 const stream = require('./routes/stream');
+const complaints = require('./routes/complaints');
+const assignments = require('./routes/assignments');
+const stats = require('./routes/stats');
 
 app.use('/api/auth', auth);
 app.use('/api/upload', upload);
@@ -62,6 +65,9 @@ app.use('/api/mentors', mentors);
 app.use('/api/admin', admin);
 app.use('/api/reviews', reviews);
 app.use('/api/stream', stream);
+app.use('/api/complaints', complaints);
+app.use('/api/assignments', assignments);
+app.use('/api/stats', stats);
 
 // Basic route
 app.get('/', (req, res) => {

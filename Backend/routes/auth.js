@@ -1,6 +1,6 @@
 const express = require('express');
-const { register, login, getMe, firebaseLogin, updateDetails, deleteAccount, forgotPassword, resetPassword } = require('../controllers/auth');
-const { protect } = require('../middleware/auth');
+const { register, login, getMe, firebaseLogin, updateDetails, deleteAccount, forgotPassword, resetPassword, getAllMentees } = require('../controllers/auth');
+const { protect, authorize } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 
 const router = express.Router();
@@ -15,6 +15,7 @@ router.post('/firebase', firebaseLogin);
 router.post('/forgotpassword', forgotPassword);
 router.put('/resetpassword/:resettoken', resetPassword);
 router.get('/me', protect, getMe);
+router.get('/mentees', protect, authorize('mentor', 'admin'), getAllMentees);
 router.put('/updatedetails', protect, updateDetails);
 router.delete('/delete', protect, deleteAccount);
 

@@ -10,13 +10,20 @@ const menteeSchema = new mongoose.Schema({
     interests: {
         type: [String],
     },
+    skills: {
+        type: [String],
+        default: []
+    },
     goals: {
         type: String,
     },
-    learningStyle: String,
     experienceLevel: {
         type: String,
         enum: ['Beginner', 'Intermediate', 'Advanced'],
+    },
+    rankScore: {
+        type: Number,
+        default: 0
     }
 });
 
