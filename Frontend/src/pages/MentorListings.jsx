@@ -62,13 +62,17 @@ const MentorListings = () => {
     };
 
     const filteredMentors = mentors.filter((mentor) => {
-        const query = searchTerm.toLowerCase();
+        const query = searchTerm.toLowerCase().trim();
+        if (!query) return true;
+        const skillsArr = [...(mentor.skills || []), ...(mentor.expertise || [])];
         return (
             mentor.firstName?.toLowerCase().includes(query) ||
             mentor.lastName?.toLowerCase().includes(query) ||
             mentor.jobTitle?.toLowerCase().includes(query) ||
             mentor.company?.toLowerCase().includes(query) ||
-            mentor.expertise?.some((s) => s.toLowerCase().includes(query))
+            mentor.category?.toLowerCase().includes(query) ||
+            mentor.bio?.toLowerCase().includes(query) ||
+            skillsArr.some((s) => s.toLowerCase().includes(query))
         );
     });
 
@@ -192,7 +196,7 @@ const MentorListings = () => {
                                             <span className="font-semibold text-slate-900 dark:text-white">{mentor.rating || 'New'}</span>
                                             <span className="text-sm text-slate-500">({mentor.reviews || 0} reviews)</span>
                                         </div>
-                                        <div className="font-semibold text-slate-900 dark:text-white">${mentor.hourlyRate}/hr</div>
+                                        <div className="font-semibold text-slate-900 dark:text-white">₹{mentor.hourlyRate}/hr</div>
                                     </div>
 
                                     <Link to={`/mentors/${mentor._id}`}>

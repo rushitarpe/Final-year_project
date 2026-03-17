@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "cyan-accent": "#00f2fe",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at top right, rgba(19, 91, 236, 0.08), transparent),
+                        radial-gradient(circle at bottom left, rgba(0, 242, 254, 0.05), transparent);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
+<!-- Hero Section -->
+<div class="relative overflow-hidden hero-gradient pt-8 pb-12 px-6">
+<div class="flex items-center justify-between mb-10">
+<div class="flex items-center gap-2">
+<div class="bg-primary rounded-lg p-1.5 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-2xl" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">GuideMe</span>
+</div>
+<button class="bg-primary/10 text-primary font-semibold px-4 py-2 rounded-full text-sm">
+                Log In
+            </button>
+</div>
+<div class="relative flex flex-col items-center text-center">
+<div class="inline-flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700 mb-6 shadow-sm">
+<span class="flex h-2 w-2 rounded-full bg-cyan-accent animate-pulse"></span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Premium Mentorship Platform</span>
+</div>
+<h1 class="text-4xl font-black leading-tight tracking-tight mb-4 text-slate-900 dark:text-white">
+                Illuminate Your <br/>
+<span class="text-primary italic">Career Path</span>
+</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-xs mb-8">
+                Propel your growth with our 3D matching engine. Connect with industry leaders who guide you to your goals.
+            </p>
+<!-- Main Hero Visual -->
+<div class="relative w-full aspect-square max-w-[320px] mb-12">
+<!-- Glowing Goal -->
+<div class="absolute top-0 right-10 w-24 h-24 bg-cyan-accent/20 rounded-full blur-3xl"></div>
+<div class="absolute top-8 right-16 z-10">
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="grade">grade</span>
+</div>
+<!-- Central 3D Scene Mockup -->
+<div class="relative w-full h-full bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 rounded-3xl shadow-2xl overflow-hidden flex items-center justify-center border border-white/50" data-alt="3D illustration of mentor pointing towards a goal">
+<img class="object-cover w-full h-full opacity-90" data-alt="Abstract 3D mentor guiding a student toward success" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkuD7MD52foh8kN8uKFxnOsdlZX243e77zMm2aDGFqiLDU2Uf7f3FJWR16hfIhM5E4jb-lZyDYe_0pLBr4QV9B83YFKBB_E2wDlbSL-g6ZmTUW5G-wEUc7AbZxDBNaxZ3WUM3Kc82cZMDSVroUJ6tdoRGYFFfM-HsnyfNp8re5dgYJB18oPyXIX-WEn8ArQDGbcjSwEx-KWQhCzZc2DpU7VuW3fRs8eph2ECL10jAiVQDS4wESfAfoQ5KxgXESUONPQLNt6koXQR4"/>
+</div>
+<!-- Floating Profile Card 1 -->
+<div class="absolute -bottom-4 -left-4 glass-card p-3 rounded-xl shadow-xl flex items-center gap-3 w-48 z-20">
+<div class="size-10 rounded-lg overflow-hidden bg-slate-200">
+<img class="size-full object-cover" data-alt="Portrait of mentor Alex Rivera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHp2_bLcow_Tfw45z39NXjs3pkrnrZG_uGlGQPkWVbNYBuCuzJU5QeU-yrM46i6Ulv3T6PAmo72gBnjcrmyAGclz2UkeM4BJ4j3M4mC0F_LwLVwBEtW69N29cEOubJRpPN6wJwUEDtHipHyOU_mNzHf008YXD2E_NzWBdsdFF5Y7QuuSZzWHjqO_C-lJcQ5XrL41jJdZA6ljvTmztL7JER-SMiZFkcN0q1baF1UUipX9u9X9uc9inKdIBXYDQbq-R_SdTzi3nWLxA"/>
+</div>
+<div>
+<p class="text-[11px] font-bold">Alex Rivera</p>
+<div class="flex items-center gap-1">
+<span class="text-[9px] font-semibold text-primary bg-primary/10 px-1.5 rounded">98% Match</span>
+</div>
+</div>
+</div>
+<!-- Floating Profile Card 2 -->
+<div class="absolute top-20 -right-6 glass-card p-2 rounded-xl shadow-lg flex items-center gap-2 w-40 z-20 rotate-3">
+<div class="size-8 rounded-full overflow-hidden bg-slate-200">
+<img class="size-full object-cover" data-alt="Portrait of mentor Sarah Chen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc5tFGK0SsQ68XJmJyffiWF7Ph7MZMw-VESrIm0GEvRvtC-3sMpacI9dWIUNzlbV5D6TXhbZHjfBJD1zyGNB7aI7wcKLupMxnS2xFwX5p6LImexaifi_S9rPDfMiaEr_qoRVLuEiu0h-yFRm4_dRyCBB126ooNj-e-x9EBki0h3Eiv1kVkiaFxIXIoXEIRntmfMznd4l-2l-xrI7U0QAy_I7sALV_xZDv9FhMW0tyhlM0oFfzE0K7XHM_mRtLgRXKheaJX-3bnbrU"/>
+</div>
+<div class="flex flex-col">
+<p class="text-[10px] font-bold">Sarah Chen</p>
+<p class="text-[8px] text-slate-400">Senior Architect</p>
+</div>
+</div>
+</div>
+<button class="w-full max-w-[280px] bg-primary text-white font-bold py-4 rounded-xl shadow-xl shadow-primary/30 flex items-center justify-center gap-2 transition-transform active:scale-95">
+                Get Started
+                <span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Features Section -->
+<div class="px-6 py-12 bg-white dark:bg-slate-900 rounded-t-[2.5rem] -mt-6 relative z-30 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Premium Features</h2>
+<span class="text-xs font-semibold text-primary">View All</span>
+</div>
+<div class="grid grid-cols-1 gap-6">
+<!-- Feature 1 -->
+<div class="group p-5 bg-background-light dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
+<div class="flex gap-4">
+<div class="flex-shrink-0 size-12 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="deployed_code">deployed_code</span>
+</div>
+<div>
+<h3 class="font-bold text-slate-800 dark:text-slate-200 mb-1">AI Match Engine</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Sophisticated 3D vector analysis to find your perfect mentor-mentee synergy.</p>
+</div>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="group p-5 bg-background-light dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
+<div class="flex gap-4">
+<div class="flex-shrink-0 size-12 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-cyan-accent">
+<span class="material-symbols-outlined text-3xl" data-icon="video_chat">video_chat</span>
+</div>
+<div>
+<h3 class="font-bold text-slate-800 dark:text-slate-200 mb-1">HD Workspace</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Integrated 4K video conferencing and collaborative whiteboards for real-time growth.</p>
+</div>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="group p-5 bg-background-light dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
+<div class="flex gap-4">
+<div class="flex-shrink-0 size-12 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="track_changes">track_changes</span>
+</div>
+<div>
+<h3 class="font-bold text-slate-800 dark:text-slate-200 mb-1">Goal Tracking</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Visualize your milestones and track achievements with interactive dashboards.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Mentors Section -->
+<div class="px-6 py-12 bg-white dark:bg-slate-900">
+<div class="flex flex-col gap-1 mb-6">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Top-Rated Mentors</h2>
+<p class="text-xs text-slate-400">Based on recent success stories and match accuracy</p>
+</div>
+<div class="flex overflow-x-auto gap-4 pb-4 -mx-6 px-6 no-scrollbar">
+<!-- Mentor 1 -->
+<div class="min-w-[180px] flex flex-col gap-3 group">
+<div class="aspect-[3/4] rounded-2xl overflow-hidden relative shadow-lg">
+<img class="size-full object-cover transition-transform group-hover:scale-105" data-alt="Mentorship professional Marcus Thorne" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0aVc37w46RfxucR_7q7Gv9A5m01VezbjtdiZewqn_GEoXWHhz48jK0mcN2RvlYeD5GnyUgDamyHYGcTkKGvJwllvHAb1qMpo8ZZ5xPjWfPYfhSB1Ipp5ctb-dxUAUyzzWRv4wz86Dn5qqJz3o0ubaYAAany3PRB1qIy-aXw2tbVa4CTgV55M9b1iOoUrHz_MEUAh4FFJ4YhgIV1AapjR7Z_-UddguSnuL9zEiQoB-j20bOfvr0c2z5HI4A_E6kGcPfUT76_KPnkI"/>
+<div class="absolute top-2 right-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-2 py-1 rounded-lg">
+<span class="text-[10px] font-black text-primary italic">95% MATCH</span>
+</div>
+</div>
+<div>
+<h4 class="font-bold text-sm">Marcus Thorne</h4>
+<p class="text-[10px] text-slate-400">Product Lead @ Meta</p>
+</div>
+</div>
+<!-- Mentor 2 -->
+<div class="min-w-[180px] flex flex-col gap-3 group">
+<div class="aspect-[3/4] rounded-2xl overflow-hidden relative shadow-lg">
+<img class="size-full object-cover transition-transform group-hover:scale-105" data-alt="Mentorship professional Elena Rodriguez" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBivTZt0gb02d_i9DnvKSbyEbvO8RLoKSr89WYlFdrZk8EH6evskP_A-5VEsO0RPybX-W3-oijXfWI9D32lv7oBHf67aD6NT7hXeYIJbFSaPRoS5oje2RqDL_cs--zrpvSHPAkBOxX3nDz7QOFF3sIIGjMDv-a10CrlrNJmYKojJJS6XjQ6qxHjkCWergxRS8mWExwJ7Qx_FyKyJbYdYMr5T_MTOS3hp5KY31BJHcI_dDHMbPEg2tcjfW87qRL5tFa5C6eCUPEG9F4"/>
+<div class="absolute top-2 right-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-2 py-1 rounded-lg">
+<span class="text-[10px] font-black text-primary italic">92% MATCH</span>
+</div>
+</div>
+<div>
+<h4 class="font-bold text-sm">Elena Rodriguez</h4>
+<p class="text-[10px] text-slate-400">UX Strategy Director</p>
+</div>
+</div>
+<!-- Mentor 3 -->
+<div class="min-w-[180px] flex flex-col gap-3 group">
+<div class="aspect-[3/4] rounded-2xl overflow-hidden relative shadow-lg">
+<img class="size-full object-cover transition-transform group-hover:scale-105" data-alt="Mentorship professional David Kim" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1QCZjNkKSzv132eBAYs2PozRilPA_zhv8fjlSoowckJr4SS-IaJ5XnUU0lCVqDw8pvx7uT9Y3yiDQfgUfd3UYevlYs5eQ71ytJKDxT1SLSWr3tIhcqZWaD2MyujNngbZ_64ZIkT5XYv-JJni2X3p7rKLXgXadvWyHaB2eGqZH5_O5euIQOc58qFzd7rcvF6q7RTnwsTsvXAbbkHmhohun5JLVJ5tX3x6F9PxxaW9qM-3YXYP6m02FmoRVEf5KTs75kd2-cm6xahA"/>
+<div class="absolute top-2 right-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md px-2 py-1 rounded-lg">
+<span class="text-[10px] font-black text-primary italic">89% MATCH</span>
+</div>
+</div>
+<div>
+<h4 class="font-bold text-sm">David Kim</h4>
+<p class="text-[10px] text-slate-400">Founding Engineer</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Stats Section -->
+<div class="px-6 py-12 mb-24">
+<div class="bg-primary rounded-3xl p-8 text-white relative overflow-hidden">
+<div class="absolute -bottom-12 -right-12 size-48 bg-white/10 rounded-full blur-2xl"></div>
+<div class="relative z-10 flex flex-col gap-6">
+<div class="grid grid-cols-2 gap-8">
+<div>
+<p class="text-3xl font-black italic">12k+</p>
+<p class="text-[10px] font-medium text-white/70 uppercase tracking-widest">Successful Pairs</p>
+</div>
+<div>
+<p class="text-3xl font-black italic">4.9/5</p>
+<p class="text-[10px] font-medium text-white/70 uppercase tracking-widest">Satisfaction</p>
+</div>
+<div>
+<p class="text-3xl font-black italic">150+</p>
+<p class="text-[10px] font-medium text-white/70 uppercase tracking-widest">Industries</p>
+</div>
+<div>
+<p class="text-3xl font-black italic">24/7</p>
+<p class="text-[10px] font-medium text-white/70 uppercase tracking-widest">Global Support</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 pb-8 pt-2 px-4">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<p class="text-[10px] font-bold">Home</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<p class="text-[10px] font-medium">Explore</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<p class="text-[10px] font-medium">Mentors</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<p class="text-[10px] font-medium">Messages</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="person_outline">person_outline</span>
+<p class="text-[10px] font-medium">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

@@ -37,6 +37,10 @@ const mentorSchema = new mongoose.Schema({
         type: [String],
         required: true,
     },
+    languages: {
+        type: [String],
+        default: []
+    },
     bio: {
         type: String,
         required: true,

@@ -43,7 +43,7 @@ export const Footer = () => {
                     <div className="lg:col-span-1">
                         <Link to="/" className="flex items-center gap-2.5 mb-5 group">
                             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center shadow-lg shadow-violet-500/25 group-hover:shadow-violet-500/40 transition-shadow">
-                                <Rocket className="w-5 h-5 text-white" />
+                                <img src="/logo.png" alt="GuideMe" className="w-5 h-5 object-contain filter invert opacity-90" />
                             </div>
                             <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
                                 Guide<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-blue-500">Me</span>

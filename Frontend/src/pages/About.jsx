@@ -5,30 +5,30 @@ import { Github, Linkedin, Twitter, Users, Zap, Award, User, Globe } from 'lucid
 const TEAM = [
     {
         name: 'Rushikesh Tarpe',
-        role: 'Fullstack Lead',
-        image: null,
-        bio: 'Dedicated to democratizing mentorship and building scalable platforms.',
+        role: 'Founder & Fullstack Lead',
+        image: '/rushikesh.jpg',
+        bio: 'Dedicated to democratizing mentorship and building scalable platforms like GuideMe.',
     },
     {
-        name: 'Alex Rivera',
+        name: 'Nayan Kadu',
         role: 'Frontend Architect',
         image: null,
         bio: 'Crafting intuitive and immersive user interfaces for the modern web.',
     },
     {
-        name: 'Sarah Chen',
+        name: 'Umang Gachke',
         role: 'Backend Engineer',
         image: null,
         bio: 'Building secure, robust, and scalable architectures for real-time services.',
     },
     {
-        name: 'David Kim',
-        role: 'Product Designer',
+        name: 'Rugved Wakekar',
+        role: 'Backend Engineer',
         image: null,
         bio: 'Creating beautiful, accessible, and intuitive user experiences.',
     },
     {
-        name: 'Jordan Smith',
+        name: 'Akshay Barse',
         role: 'Growth Lead',
         image: null,
         bio: 'Ensuring global reach and community success for our mentees.',
@@ -36,10 +36,10 @@ const TEAM = [
 ];
 
 const STATS = [
-    { icon: <Users className="w-6 h-6 text-primary-500" />, value: '10K+', label: 'Active Users' },
-    { icon: <Globe className="w-6 h-6 text-blue-500" />, value: '50+', label: 'Countries' },
-    { icon: <Zap className="w-6 h-6 text-yellow-500" />, value: '100K+', label: 'Sessions' },
-    { icon: <Award className="w-6 h-6 text-emerald-500" />, value: '4.9/5', label: 'Avg Rating' },
+    { icon: <Users className="w-6 h-6 text-primary-500" />, value: '5+', label: 'Active Users' },
+    { icon: <Globe className="w-6 h-6 text-blue-500" />, value: '1', label: 'Countries' },
+    { icon: <Zap className="w-6 h-6 text-yellow-500" />, value: '10+', label: 'Sessions' },
+    { icon: <Award className="w-6 h-6 text-emerald-500" />, value: '4.2/5', label: 'Avg Rating' },
 ];
 
 const About = () => {
@@ -61,7 +61,7 @@ const About = () => {
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-blue-600">Next Generation</span>
                     </h1>
                     <p className="text-xl text-slate-500 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                        We built MentorConnect to bridge the gap between ambitious learners and experienced leaders. Our mission is to make quality guidance accessible to everyone, everywhere.
+                        We built GuideMe to bridge the gap between ambitious learners and experienced leaders. Our mission is to make quality guidance accessible to everyone, everywhere through AI-powered matchmaking.
                     </p>
                 </div>
 

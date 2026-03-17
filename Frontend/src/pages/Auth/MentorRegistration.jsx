@@ -56,6 +56,7 @@ const MentorRegistration = () => {
     const { login } = useAuth();
     const [globalError, setGlobalError] = useState('');
     const [step, setStep] = useState(1);
+    const [isParsingResume, setIsParsingResume] = useState(false);
 
     const prefilledData = location.state || {};
 
@@ -80,6 +81,58 @@ const MentorRegistration = () => {
     const watchResume = watch('resume');
     const watchVideo = watch('introVideo');
     const selectedCategory = watch('category');
+
+    const handleResumeParse = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (file.type !== 'application/pdf') {
+            return toast.error("Please upload a PDF file");
+        }
+
+        setIsParsingResume(true);
+        const uploadData = new FormData();
+        uploadData.append('file', file);
+
+        try {
+            toast.loading("AI is reading your resume...", { id: "resume" });
+            const parseRes = await api.post('/resume/parse', uploadData);
+
+            if (parseRes.data.success) {
+                const { skills: parsedSkills, experience } = parseRes.data.data;
+                
+                // Auto-fill experience and job info
+                if (experience && experience.length > 0) {
+                    const employmentStr = experience.map(exp => 
+                        `${exp.title} at ${exp.company} (${exp.duration})\n${exp.description}`
+                    ).join('\n\n');
+                    const currentEmp = watch('employment') || '';
+                    setValue('employment', currentEmp.trim() ? `${currentEmp}\n\n${employmentStr}` : employmentStr, { shouldValidate: true });
+                    
+                    if (experience[0]) {
+                        if (!watch('jobTitle')) setValue('jobTitle', experience[0].title, { shouldValidate: true });
+                        if (!watch('company')) setValue('company', experience[0].company, { shouldValidate: true });
+                    }
+                }
+
+                // Auto-fill skills
+                if (parsedSkills && parsedSkills.length > 0) {
+                    const currentSkills = watch('skills');
+                    const newSkills = currentSkills ? `${currentSkills}, ${parsedSkills.join(', ')}` : parsedSkills.join(', ');
+                    setValue('skills', newSkills, { shouldValidate: true });
+                }
+
+                toast.success("Resume parsed and form populated! Please review the details.", { id: "resume" });
+                setStep(2); // Jump to professional step
+            }
+        } catch (error) {
+            console.error("Resume parsing error", error);
+            toast.error(error.response?.data?.error || "Failed to process resume", { id: "resume" });
+        } finally {
+            setIsParsingResume(false);
+            e.target.value = ''; // clear input
+        }
+    };
 
     const onSubmit = async (data) => {
         setGlobalError('');
@@ -158,6 +211,22 @@ const MentorRegistration = () => {
                 )}
 
                 <Card className="p-8 md:p-12 shadow-2xl border-none bg-white dark:bg-slate-900">
+                    {/* Auto-fill from Resume Section */}
+                    {step < 3 && (
+                        <div className="bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 border border-violet-500/20 rounded-2xl p-6 mb-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <h4 className="font-bold text-lg text-violet-600 dark:text-violet-400 mb-1">✨ Magic Auto-fill</h4>
+                                <p className="text-sm text-slate-500 dark:text-slate-400">Upload your PDF resume to instantly fill your professional profile, skills, and experience.</p>
+                            </div>
+                            <div className="shrink-0 relative">
+                                <label className="flex items-center gap-2 px-6 h-12 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-xl cursor-pointer shadow-lg shadow-violet-500/30 transition-all active:scale-95">
+                                    {isParsingResume ? 'Reading PDF...' : 'Upload Resume'}
+                                    <input type="file" className="hidden" accept=".pdf" onChange={handleResumeParse} disabled={isParsingResume} />
+                                </label>
+                            </div>
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                         {/* Step 1: Account Info */}
                         {step === 1 && (

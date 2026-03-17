@@ -95,9 +95,12 @@ export const ChatbotWidget = () => {
 
         try {
             const res = await api.post('/chatbot/ask', { message: inputStr });
+            const botText = typeof res.data.data === 'string'
+                ? res.data.data
+                : res.data.data?.message || res.data.message || 'Sorry, I could not get a response.';
             setMessages(prev => [...prev, {
                 id: (Date.now() + 1).toString(),
-                text: res.data.message || res.data.data?.message || res.data,
+                text: botText,
                 sender: 'bot',
                 timestamp: new Date()
             }]);

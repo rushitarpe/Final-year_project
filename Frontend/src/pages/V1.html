@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GuideMe Premium Landing Page V1</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Outfit:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Outfit", "Inter", "sans-serif"],
+                        "sans": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-sans text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Hero Section -->
+<div class="relative @container px-4 pt-8 pb-12 overflow-hidden">
+<!-- Background Decorative Elements -->
+<div class="absolute top-[-10%] right-[-20%] w-[300px] h-[300px] bg-primary/10 rounded-full blur-[80px]"></div>
+<div class="absolute bottom-[20%] left-[-10%] w-[200px] h-[200px] bg-primary/5 rounded-full blur-[60px]"></div>
+<div class="flex flex-col gap-8 items-center text-center">
+<!-- Logo -->
+<div class="flex items-center gap-2 mb-2">
+<div class="bg-primary text-white p-2 rounded-lg">
+<span class="material-symbols-outlined text-2xl">auto_awesome</span>
+</div>
+<span class="font-display text-2xl font-extrabold tracking-tight text-slate-900">GuideMe</span>
+</div>
+<!-- Hero Content -->
+<div class="flex flex-col gap-4 z-10">
+<h1 class="font-display text-4xl font-black leading-tight tracking-tight text-slate-900 @[480px]:text-5xl">
+                        Unlock Your Potential with <span class="text-primary">Premium Mentorship</span>
+</h1>
+<p class="text-slate-600 text-lg font-normal max-w-[320px] mx-auto leading-relaxed">
+                        Experience high-end guidance with expert mentors tailored to your professional career path.
+                    </p>
+</div>
+<!-- Call to Action -->
+<div class="flex flex-col gap-3 w-full max-w-[320px] z-10">
+<button class="flex items-center justify-center rounded-xl h-14 bg-primary text-white text-lg font-bold shadow-lg shadow-primary/25 active:scale-95 transition-transform">
+                        Start Your Journey
+                    </button>
+<p class="text-slate-400 text-sm">Join 12,000+ ambitious professionals</p>
+</div>
+<!-- Hero Illustration with Floating Cards -->
+<div class="relative w-full aspect-square max-w-[400px] mt-4">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-3xl overflow-hidden shadow-2xl">
+<div class="w-full h-full bg-cover bg-center" data-alt="3D illustration of mentor and mentee walking towards a glowing horizon" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCf_29Nw677VRbROrhfXCC6xK-SpUeLXfHgxtdOtJ7Y5bQpAp5b7mIgoleOHGFHVvkTcKaj-nwkkjNCjvAjk_-mpepfcbg_FhsZaiO3fjDkE_zv12RT-unogG7Q3mD2Ba8epcoHvJruvZ7_ZzLS1QEVmghuirimAfj3ZhvymeAbBokFy2IP6XcWC99RyUt32Mhpxmm_IwSYhL3Rn-zpxb4l7bJQxYeIYhcqYRj9feN10Q1aPakZW6sNx60LDUzOzmW2Qm7I4LZhtpA')"></div>
+</div>
+<!-- Floating Card: Active Mentorships -->
+<div class="glass-card absolute top-6 -left-2 p-4 rounded-xl shadow-xl flex items-center gap-3 animate-pulse">
+<div class="bg-primary/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary">groups</span>
+</div>
+<div class="text-left">
+<p class="text-xs text-slate-500 font-medium">Active Mentorships</p>
+<p class="text-base font-bold text-slate-900">1,240+</p>
+</div>
+</div>
+<!-- Floating Card: Success Rate -->
+<div class="glass-card absolute bottom-12 -right-4 p-4 rounded-xl shadow-xl flex items-center gap-3">
+<div class="bg-green-100 p-2 rounded-lg">
+<span class="material-symbols-outlined text-green-600">verified</span>
+</div>
+<div class="text-left">
+<p class="text-xs text-slate-500 font-medium">Success Rate</p>
+<p class="text-base font-bold text-slate-900">98.4%</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Stats Section -->
+<div class="px-4 py-8 flex flex-col gap-4">
+<div class="flex items-stretch justify-between gap-4 rounded-xl bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+<div class="flex flex-[2_2_0px] flex-col gap-4">
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 text-lg font-bold font-display leading-tight">Elite Mentor Network</p>
+<p class="text-slate-500 text-sm font-normal leading-normal">Access top 1% experts from Google, Apple, and leading startups.</p>
+</div>
+<button class="flex items-center justify-center rounded-lg h-9 px-4 bg-primary/10 text-primary gap-2 text-sm font-bold w-fit">
+<span>View Mentors</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<div class="w-24 h-24 bg-center bg-no-repeat bg-cover rounded-xl" data-alt="Grid of diverse professional mentor portraits" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC8dXRT_aEXqiacJor2eaufycrQsQiZ9k2Lnj5Bj7aJawCUE7G6iNTlAlddDB9S-hLvyTeZeV61hrwJ2HbvWsjp2el-OYzkyw15MXeBfdvw0i7l-x_eQNy5al63bmf-TmsXj_q5jrXhhWJRNAVebWphkZsBx8Hn3-PP1QlQ5AB1mJE73jdrxYqrB0MAN_nqGWvHA97EXelntxHhRbH0vd1XVxJ7ceFBkEdO7ZvVqAMzE1188O_yFaQkLzHE6p2nXvdeafUwu6t2yAA");'></div>
+</div>
+</div>
+<!-- How it Works Section -->
+<div class="px-4 py-10 bg-white">
+<div class="text-center mb-10">
+<h2 class="font-display text-2xl font-extrabold text-slate-900 mb-2">How it Works</h2>
+<div class="h-1.5 w-12 bg-primary rounded-full mx-auto"></div>
+</div>
+<div class="flex flex-col gap-8 relative">
+<!-- Vertical Line Decor -->
+<div class="absolute left-6 top-4 bottom-4 w-0.5 bg-slate-100"></div>
+<!-- Step 1 -->
+<div class="flex gap-6 relative z-10">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-display font-bold text-xl shadow-lg shadow-primary/20">
+                        1
+                    </div>
+<div class="flex flex-col gap-1">
+<h3 class="text-lg font-bold text-slate-900">Define Your Goal</h3>
+<p class="text-slate-500 text-sm leading-relaxed">Share your career aspirations and we'll map out a personalized curriculum for your growth.</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex gap-6 relative z-10">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-white border-2 border-primary text-primary flex items-center justify-center font-display font-bold text-xl">
+                        2
+                    </div>
+<div class="flex flex-col gap-1">
+<h3 class="text-lg font-bold text-slate-900">Match with Expert</h3>
+<p class="text-slate-500 text-sm leading-relaxed">Our AI-driven matching connects you with a mentor who has walked the path you desire.</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex gap-6 relative z-10">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-white border-2 border-slate-200 text-slate-400 flex items-center justify-center font-display font-bold text-xl">
+                        3
+                    </div>
+<div class="flex flex-col gap-1">
+<h3 class="text-lg font-bold text-slate-900">Accelerate Growth</h3>
+<p class="text-slate-500 text-sm leading-relaxed">Weekly 1-on-1 sessions, project reviews, and direct chat access to your mentor.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="mt-auto border-t border-slate-100 bg-white/80 backdrop-blur-md sticky bottom-0 z-50">
+<div class="flex gap-2 px-4 pb-6 pt-3">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1">home</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined text-[24px]">explore</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Explore</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined text-[24px]">school</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Mentors</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined text-[24px]">account_circle</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Profile</p>
+</a>
+</div>
+</div>
+</div>
+</body></html>

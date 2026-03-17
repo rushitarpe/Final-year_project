@@ -53,6 +53,7 @@ const stream = require('./routes/stream');
 const complaints = require('./routes/complaints');
 const assignments = require('./routes/assignments');
 const stats = require('./routes/stats');
+const resume = require('./routes/resume');
 
 app.use('/api/auth', auth);
 app.use('/api/upload', upload);
@@ -68,6 +69,7 @@ app.use('/api/stream', stream);
 app.use('/api/complaints', complaints);
 app.use('/api/assignments', assignments);
 app.use('/api/stats', stats);
+app.use('/api/resume', resume);
 
 // Basic route
 app.get('/', (req, res) => {

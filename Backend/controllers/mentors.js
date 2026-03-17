@@ -2,12 +2,29 @@ const Mentor = require('../models/Mentor');
 const Mentee = require('../models/Mentee');
 const { findMatches } = require('../services/matching');
 
-// @desc    Get all mentors
+// @desc    Get all mentors (optionally filtered by ?search=)
 // @route   GET /api/mentors
 // @access  Public
 exports.getMentors = async (req, res, next) => {
     try {
-        const mentors = await Mentor.find({ role: 'mentor', isApproved: true });
+        const { search } = req.query;
+        let filter = { role: 'mentor', isApproved: true };
+
+        if (search && search.trim()) {
+            const regex = new RegExp(search.trim(), 'i');
+            filter.$or = [
+                { firstName: regex },
+                { lastName: regex },
+                { jobTitle: regex },
+                { company: regex },
+                { category: regex },
+                { bio: regex },
+                { skills: regex },
+                { expertise: regex },
+            ];
+        }
+
+        const mentors = await Mentor.find(filter);
         res.status(200).json({ success: true, count: mentors.length, data: mentors });
     } catch (err) {
         next(err);

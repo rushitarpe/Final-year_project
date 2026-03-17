@@ -14,6 +14,19 @@ const menteeSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
+    languages: {
+        type: [String],
+        default: []
+    },
+    resume: {
+        type: String, // Cloudinary URL or local path
+    },
+    experience: [{
+        title: String,
+        company: String,
+        duration: String,
+        description: String
+    }],
     goals: {
         type: String,
     },

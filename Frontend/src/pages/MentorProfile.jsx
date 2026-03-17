@@ -204,12 +204,25 @@ const MentorProfile = () => {
 
                         <h3 className="text-sm font-bold uppercase tracking-widest text-primary-500 mb-4 text-white dark:text-white">Expertise</h3>
                         <div className="flex flex-wrap gap-2 mb-8">
-                            {(mentor.skills || []).map((skill) => (
+                            {(mentor.skills || mentor.expertise || []).map((skill) => (
                                 <span key={skill} className="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 px-4 py-2 rounded-xl text-sm font-semibold border border-primary-500/10">
                                     {skill}
                                 </span>
                             ))}
                         </div>
+
+                        {(mentor.languages || []).length > 0 && (
+                            <>
+                                <h3 className="text-sm font-bold uppercase tracking-widest text-blue-500 mb-4">Languages</h3>
+                                <div className="flex flex-wrap gap-2 mb-8">
+                                    {mentor.languages.map((lang) => (
+                                        <span key={lang} className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-xl text-sm font-semibold border border-blue-500/10">
+                                            🌐 {lang}
+                                        </span>
+                                    ))}
+                                </div>
+                            </>
+                        )}
 
                         {mentor.introVideo && (
                             <div 
@@ -327,7 +340,7 @@ const MentorProfile = () => {
                     <Card className="p-8 bg-white dark:bg-slate-900 border-none shadow-xl sticky top-24">
                         <div className="mb-8 pb-8 border-b border-slate-100 dark:border-slate-800">
                             <div className="flex items-baseline gap-1">
-                                <span className="text-4xl font-bold text-slate-900 dark:text-white">${mentor.hourlyRate}</span>
+                                <span className="text-4xl font-bold text-slate-900 dark:text-white">₹{mentor.hourlyRate}</span>
                                 <span className="text-slate-500 font-medium">/ hour</span>
                             </div>
                         </div>

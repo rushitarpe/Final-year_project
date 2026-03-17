@@ -12,7 +12,9 @@ const Profile = () => {
     const { user, login, logout } = useAuth();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
+    const resumeInputRef = useRef(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [isParsingResume, setIsParsingResume] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -23,10 +25,13 @@ const Profile = () => {
         company: '',
         hourlyRate: '',
         expertise: [],
-        skills: []
+        skills: [],
+        languages: [],
+        resume: ''
     });
     
     const [currentTag, setCurrentTag] = useState('');
+    const [currentLang, setCurrentLang] = useState('');
 
     useEffect(() => {
         if (user) {
@@ -38,7 +43,9 @@ const Profile = () => {
                 company: user.company || '',
                 hourlyRate: user.hourlyRate || '',
                 expertise: user.expertise || [],
-                skills: user.skills || []
+                skills: user.skills || [],
+                languages: user.languages || [],
+                resume: user.resume || ''
             });
         }
     }, [user]);
@@ -47,13 +54,13 @@ const Profile = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleAddTag = (e, type) => {
-        if (e.key === 'Enter' && currentTag.trim() !== '') {
+    const handleAddTag = (e, type, stateValue, stateSetter) => {
+        if (e.key === 'Enter' && stateValue.trim() !== '') {
             e.preventDefault();
-            if (!formData[type].includes(currentTag.trim())) {
-                setFormData({ ...formData, [type]: [...formData[type], currentTag.trim()] });
+            if (!formData[type].includes(stateValue.trim())) {
+                setFormData({ ...formData, [type]: [...formData[type], stateValue.trim()] });
             }
-            setCurrentTag('');
+            stateSetter('');
         }
     };
 
@@ -106,6 +113,60 @@ const Profile = () => {
             toast.error('Upload failed');
         } finally {
             setIsUploading(false);
+        }
+    };
+
+    const handleResumeUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (file.type !== 'application/pdf') {
+            return toast.error("Please upload a PDF file");
+        }
+
+        setIsParsingResume(true);
+        const uploadData = new FormData();
+        uploadData.append('file', file);
+
+        try {
+            toast.loading("AI is reading your resume...", { id: "resume" });
+            
+            // 1. Upload to Cloudinary for permanent storage
+            const uploadRes = await api.post('/upload', uploadData);
+            let resumeUrl = formData.resume;
+            if (uploadRes.data.success) {
+                resumeUrl = uploadRes.data.data.url;
+            }
+
+            // 2. Parse text with Gemini via our new endpoint
+            const parseRes = await api.post('/resume/parse', uploadData);
+            if (parseRes.data.success) {
+                const { skills: parsedSkills, experience, languages } = parseRes.data.data;
+                
+                // Construct a nicely formatted experience block to append to the bio
+                let expText = "";
+                if (experience && experience.length > 0) {
+                    expText = "\n\n--- AI Extracted Experience ---\n" + experience.map(exp => 
+                        `${exp.title} at ${exp.company} (${exp.duration})\n${exp.description}`
+                    ).join('\n\n');
+                }
+
+                setFormData(prev => ({
+                    ...prev,
+                    resume: resumeUrl,
+                    skills: user.role === 'mentee' ? [...new Set([...prev.skills, ...(parsedSkills || [])])] : prev.skills,
+                    expertise: user.role === 'mentor' ? [...new Set([...prev.expertise, ...(parsedSkills || [])])] : prev.expertise,
+                    languages: [...new Set([...prev.languages, ...(languages || [])])],
+                    bio: (prev.bio + expText).trim()
+                }));
+                
+                toast.success("Resume parsed and profile populated!", { id: "resume" });
+            }
+        } catch (error) {
+            console.error("Resume parsing error", error);
+            toast.error(error.response?.data?.error || "Failed to process resume", { id: "resume" });
+        } finally {
+            setIsParsingResume(false);
         }
     };
 
@@ -181,7 +242,37 @@ const Profile = () => {
 
                     {/* Information Form */}
                     <div className="lg:col-span-2">
-                        <Card className="p-8 md:p-10 border-none shadow-2xl bg-white dark:bg-slate-900 rounded-[2.5rem]">
+                        <Card className="p-8 md:p-10 border-none shadow-2xl bg-white dark:bg-slate-900 rounded-[2.5rem] mb-8 relative overflow-hidden">
+                            {/* AI Magic Banner */}
+                            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-blue-500" />
+                            
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8 bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-100 dark:border-slate-800">
+                                <div>
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                                        <Briefcase className="w-5 h-5 text-violet-500" />
+                                        Smart Resume Upload
+                                    </h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                                        Upload your PDF resume. Our AI will automatically extract your skills, languages, and format your experience!
+                                    </p>
+                                    {formData.resume && (
+                                        <a href={formData.resume} target="_blank" rel="noreferrer" className="text-xs font-bold text-primary-500 hover:underline mt-2 inline-block">
+                                            View Active Resume
+                                        </a>
+                                    )}
+                                </div>
+                                <div className="shrink-0">
+                                    <input ref={resumeInputRef} type="file" className="hidden" accept=".pdf" onChange={handleResumeUpload} />
+                                    <Button 
+                                        type="button"
+                                        onClick={() => resumeInputRef.current?.click()}
+                                        disabled={isParsingResume}
+                                        className="h-12 px-6 rounded-xl shadow-lg shadow-violet-500/20 bg-violet-600 hover:bg-violet-700 text-white font-bold transition-transform active:scale-95"
+                                    >
+                                        {isParsingResume ? 'Analyzing PDF...' : 'Upload PDF Resume'}
+                                    </Button>
+                                </div>
+                            </div>
                             <form onSubmit={handleSubmit} className="space-y-8">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
@@ -194,7 +285,7 @@ const Profile = () => {
                                             <Input label="Job Title" name="jobTitle" value={formData.jobTitle} onChange={handleChange} />
                                             <Input label="Company" name="company" value={formData.company} onChange={handleChange} />
                                         </div>
-                                        <Input label="Hourly Rate ($)" name="hourlyRate" type="number" value={formData.hourlyRate} onChange={handleChange} />
+                                        <Input label="Hourly Rate (₹)" name="hourlyRate" type="number" value={formData.hourlyRate} onChange={handleChange} />
 
                                         <div className="space-y-4 md:col-span-2 mt-4 text-left">
                                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Expertise (Press Enter to add)</label>
@@ -211,7 +302,7 @@ const Profile = () => {
                                                     type="text" 
                                                     value={currentTag} 
                                                     onChange={(e) => setCurrentTag(e.target.value)} 
-                                                    onKeyDown={(e) => handleAddTag(e, 'expertise')} 
+                                                    onKeyDown={(e) => handleAddTag(e, 'expertise', currentTag, setCurrentTag)} 
                                                     placeholder={formData.expertise.length === 0 ? "e.g., React, Python, UI Design" : "Add more..."} 
                                                     className="flex-1 bg-transparent border-none text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0 min-w-[120px]" 
                                                 />
@@ -236,13 +327,35 @@ const Profile = () => {
                                                 type="text" 
                                                 value={currentTag} 
                                                 onChange={(e) => setCurrentTag(e.target.value)} 
-                                                onKeyDown={(e) => handleAddTag(e, 'skills')} 
+                                                onKeyDown={(e) => handleAddTag(e, 'skills', currentTag, setCurrentTag)} 
                                                 placeholder={formData.skills.length === 0 ? "e.g., JavaScript, Marketing, CSS" : "Add more..."} 
                                                 className="flex-1 bg-transparent border-none text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0 min-w-[120px]" 
                                             />
                                         </div>
                                     </div>
                                 )}
+
+                                <div className="space-y-4 md:col-span-2 text-left mt-4">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Spoken Languages</label>
+                                    <div className="flex flex-wrap items-center gap-2 p-3 bg-slate-50 dark:bg-slate-950 rounded-[2rem] min-h-[56px] border border-slate-100 dark:border-slate-800 focus-within:ring-2 focus-within:ring-primary-500/20">
+                                        {formData.languages.map((tag) => (
+                                            <span key={tag} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white rounded-xl text-xs font-semibold shadow-sm">
+                                                {tag}
+                                                <button type="button" onClick={() => handleRemoveTag(tag, 'languages')} className="hover:text-blue-200 transition-colors">
+                                                    <Trash2 className="w-3 h-3" />
+                                                </button>
+                                            </span>
+                                        ))}
+                                        <input 
+                                            type="text" 
+                                            value={currentLang} 
+                                            onChange={(e) => setCurrentLang(e.target.value)} 
+                                            onKeyDown={(e) => handleAddTag(e, 'languages', currentLang, setCurrentLang)} 
+                                            placeholder={formData.languages.length === 0 ? "e.g., English, Spanish, Hindi" : "Add language..."} 
+                                            className="flex-1 bg-transparent border-none text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0 min-w-[120px]" 
+                                        />
+                                    </div>
+                                </div>
 
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Bio & Experience</label>
@@ -252,7 +365,7 @@ const Profile = () => {
                                         onChange={handleChange}
                                         rows={6}
                                         className="w-full p-5 bg-slate-50 dark:bg-slate-950 border-none rounded-[2rem] text-sm font-medium focus:ring-2 focus:ring-primary-500/20 transition-all min-h-[160px]"
-                                        placeholder="Share your journey..."
+                                        placeholder="Share your journey or let AI generate your experience from your resume..."
                                     />
                                 </div>
 

@@ -12,21 +12,30 @@ exports.findMatches = async (menteeId, menteeProfile) => {
             // Construct a prompt for Gemini AI to evaluate the match
             const systemContext = "You are an AI matchmaking assistant for a tech mentorship platform. Your job is to output a single integer from 0 to 100 representing the compatibility score between a Mentee and a Mentor. Only output the integer, nothing else.";
             
+            // Build a rich mentee experience summary for the prompt
+            const menteeExpSummary = (menteeProfile.experience || [])
+                .slice(0, 3)
+                .map(e => `${e.title} at ${e.company} (${e.duration})`)
+                .join('; ') || 'None';
+
             const prompt = `
-                Evaluate the match between this Mentee and Mentor.
+                Evaluate the mentorship compatibility between this Mentee and Mentor.
                 
                 Mentee:
                 Goals: ${menteeProfile.goals || 'Not specified'}
                 Interests: ${menteeProfile.interests?.join(', ') || 'None'}
                 Skills: ${menteeProfile.skills?.join(', ') || 'None'}
+                Languages: ${menteeProfile.languages?.join(', ') || 'None'}
                 Experience Level: ${menteeProfile.experienceLevel || 'Beginner'}
+                Work Experience: ${menteeExpSummary}
 
                 Mentor:
                 Category/Field: ${mentor.category || 'Not specified'}
-                Expertise/Skills: ${mentor.expertise?.join(', ') || 'None'}
+                Expertise/Skills: ${(mentor.expertise || mentor.skills || []).join(', ') || 'None'}
+                Languages: ${(mentor.languages || []).join(', ') || 'None'}
                 Bio: ${mentor.bio || 'None'}
 
-                Return a single number between 0 and 100 representing how good of a match this is. 100 is a perfect match.
+                Score the match from 0–100. Consider skill overlap, language alignment, experience relevance, and field match. Return ONLY a single integer.
             `;
 
             const aiResponse = await getAIResponse(prompt, systemContext);
@@ -36,11 +45,12 @@ exports.findMatches = async (menteeId, menteeProfile) => {
                 score = parsedScore;
             } else {
                 // Fallback scoring if AI parsing fails
-                if (menteeProfile.skills && mentor.expertise) {
-                    const common = menteeProfile.skills.filter(s => mentor.expertise.includes(s));
+                const mentorSkillsAll = [...(mentor.skills || []), ...(mentor.expertise || [])];
+                if (menteeProfile.skills && mentorSkillsAll.length) {
+                    const common = menteeProfile.skills.filter(s => mentorSkillsAll.map(x => x.toLowerCase()).includes(s.toLowerCase()));
                     score += (common.length * 15);
                 }
-                if (menteeProfile.interests && mentor.category && mentor.category.includes(menteeProfile.interests[0])) {
+                if (menteeProfile.interests && mentor.category && mentor.category.toLowerCase().includes((menteeProfile.interests[0] || '').toLowerCase())) {
                     score += 20;
                 }
             }
@@ -48,8 +58,9 @@ exports.findMatches = async (menteeId, menteeProfile) => {
         } catch (error) {
             console.error('Error during AI matchmaking component:', error);
             // Basic fallback scoring
-            if (menteeProfile.skills && mentor.expertise) {
-                const commonSkills = menteeProfile.skills.filter(skill => mentor.expertise.includes(skill));
+            const mentorSkillsAll = [...(mentor.skills || []), ...(mentor.expertise || [])];
+            if (menteeProfile.skills && mentorSkillsAll.length) {
+                const commonSkills = menteeProfile.skills.filter(skill => mentorSkillsAll.map(x => x.toLowerCase()).includes(skill.toLowerCase()));
                 score += (commonSkills.length * 10);
             }
             if (menteeProfile.goals && mentor.category) {
