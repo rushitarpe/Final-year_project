@@ -23,6 +23,12 @@ const corsOptions = {
         // Allow requests with no origin (curl, Postman, server-to-server)
         if (!origin) return callback(null, true);
         if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+        
+        // Allow dynamic Vercel preview subdomains for this project
+        if (origin.startsWith('https://mentee-mentor') && origin.endsWith('.vercel.app')) {
+            return callback(null, true);
+        }
+        
         callback(new Error(`CORS: origin '${origin}' not allowed`));
     },
     credentials: true,
