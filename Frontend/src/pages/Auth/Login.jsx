@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Card } from '../../components/ui/Card';
@@ -13,6 +14,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     // Forgot Password State
     const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
@@ -45,9 +47,17 @@ const Login = () => {
     const handleGoogleLogin = async () => {
         setError('');
         try {
-            await googleSignIn();
+            const result = await googleSignIn();
+            // googleSignIn calls login() internally which sets user,
+            // but we need to navigate manually here
+            if (result && result.user) {
+                navigate(`/dashboard/${result.user.role}`);
+            }
         } catch (err) {
-            setError(err.response?.data?.error || 'Account not found or Google sign-in failed.');
+            const msg = err?.response?.data?.error 
+                || err?.message 
+                || 'Google sign-in failed. Make sure your account exists on GuideMe.';
+            setError(msg);
         }
     };
 
@@ -97,14 +107,25 @@ const Login = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
-                        <Input
-                            label="Password"
-                            type="password"
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className="relative">
+                            <Input
+                                label="Password"
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-[34px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+                                tabIndex={-1}
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            >
+                                {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                            </button>
+                        </div>
                         <div className="flex justify-end">
                             <span
                                 onClick={() => setIsForgotModalOpen(true)}

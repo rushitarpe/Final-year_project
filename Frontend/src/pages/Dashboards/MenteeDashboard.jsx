@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import {
     Calendar, Clock, Video, Star, BookOpen, ChevronRight,
     Search, CheckCircle, ExternalLink, Zap, TrendingUp,
-    AlertCircle, MessageSquare, X
+    AlertCircle, MessageSquare, X, Bot, Send, Trash2, Sparkles
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
@@ -71,38 +71,295 @@ const LiveBanner = ({ booking, onJoin }) => {
     );
 };
 
+// ─── Tag colour map ───────────────────────────────────────────────────────────
+const TAG_STYLES = {
+    'Best Match':              'bg-amber-500/20 text-amber-400 border-amber-500/30',
+    'Top Rated':               'bg-violet-500/20 text-violet-400 border-violet-500/30',
+    'Budget Friendly':         'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+    'Same Field':              'bg-blue-500/20 text-blue-400 border-blue-500/30',
+    'Highly Experienced':      'bg-orange-500/20 text-orange-400 border-orange-500/30',
+    'Career Switcher Friendly':'bg-pink-500/20 text-pink-400 border-pink-500/30',
+};
+
 // ─── Mentor Card ──────────────────────────────────────────────────────────────
 const MentorCard = ({ mentor }) => {
     const navigate = useNavigate();
+    const score    = mentor.matchScore;
+    const reasons  = mentor.matchReasons || [];
+    const tag      = mentor.tag;
+    const tagStyle = TAG_STYLES[tag] || 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+
     return (
-        <div className="bg-white/5 border border-white/8 rounded-xl p-4 hover:bg-violet-500/10 transition-all group">
+        <div className="bg-white/5 border border-white/8 rounded-xl p-4 hover:bg-violet-500/10 transition-all group relative overflow-hidden">
+            {/* Tag badge */}
+            {tag && (
+                <span className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full border ${tagStyle}`}>
+                    {tag}
+                </span>
+            )}
+
             <div className="flex items-start gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center font-bold text-white uppercase text-sm shrink-0 shadow-lg shadow-violet-500/20">
-                    {mentor.firstName?.[0] || '?'}
+                {/* Avatar with match score ring */}
+                <div className="relative shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center font-bold text-white uppercase text-sm shadow-lg shadow-violet-500/20">
+                        {mentor.profileImage && mentor.profileImage !== 'default.jpg'
+                            ? <img src={mentor.profileImage} alt="" className="w-full h-full object-cover rounded-xl" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${mentor.firstName}+${mentor.lastName}&background=random`; }} />
+                            : (mentor.firstName?.[0] || '?')}
+                    </div>
+                    {score != null && (
+                        <span className="absolute -bottom-1.5 -right-1.5 text-[10px] font-black bg-violet-600 text-white rounded-full px-1.5 py-px shadow">
+                            {score}%
+                        </span>
+                    )}
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 pr-14">
                     <p className="font-semibold text-white text-sm truncate">{mentor.firstName} {mentor.lastName}</p>
-                    <p className="text-xs text-slate-500 truncate">{mentor.expertise?.join(', ') || 'Mentor'}</p>
+                    <p className="text-xs text-slate-500 truncate">{mentor.jobTitle || mentor.category || 'Mentor'}</p>
                     <div className="flex items-center gap-1 mt-0.5">
                         <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                        <span className="text-xs text-slate-400">{mentor.rating?.toFixed(1) || '4.8'}</span>
+                        <span className="text-xs text-slate-400">{(mentor.averageRating || mentor.rating || 0).toFixed(1)}</span>
+                        {mentor.sessionPrice != null && (
+                            <span className="text-xs text-slate-600 ml-2">
+                                {mentor.sessionPrice === 0 ? '🆓 Free' : `₹${mentor.sessionPrice}`}
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
-            {/* Available slot chips */}
-            {(mentor.availability?.slots || []).length > 0 ? (
-                <div className="flex flex-wrap gap-1 mb-3">
-                    {(mentor.availability.slots).slice(0, 3).map((s, i) => (
-                        <span key={i} className="px-2 py-0.5 text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-md">{s}</span>
+
+            {/* AI Match Reasons */}
+            {reasons.length > 0 && (
+                <ul className="mb-3 space-y-0.5">
+                    {reasons.slice(0, 3).map((r, i) => (
+                        <li key={i} className="flex items-start gap-1.5 text-[11px] text-slate-400">
+                            <CheckCircle className="w-3 h-3 text-emerald-500 mt-0.5 shrink-0" />
+                            {r}
+                        </li>
                     ))}
-                </div>
-            ) : (
-                <p className="text-xs text-slate-600 mb-3 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> No slots set</p>
+                </ul>
             )}
+
             <button onClick={() => navigate(`/mentors/${mentor._id}`)}
                 className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-violet-600/20 hover:bg-violet-600/40 border border-violet-500/20 text-xs font-semibold text-violet-300 transition-all">
-                Book Session <ChevronRight className="w-3 h-3" />
+                View Profile <ChevronRight className="w-3 h-3" />
             </button>
+        </div>
+    );
+};
+
+// ─── AI Chat Widget ───────────────────────────────────────────────────────────
+const QUICK_REPLIES = [
+    'How does AI Matching work?',
+    'How do I book a session?',
+    'Tips for my first session',
+    'How to write a good goal?',
+];
+
+const AIChatWidget = ({ user }) => {
+    const storageKey = `mentorbot_chat_${user?._id || 'guest'}`;
+
+    const loadHistory = () => {
+        try {
+            const saved = localStorage.getItem(storageKey);
+            return saved ? JSON.parse(saved) : [];
+        } catch { return []; }
+    };
+
+    const [isOpen, setIsOpen]       = useState(false);
+    const [messages, setMessages]   = useState(loadHistory);
+    const [inputText, setInputText] = useState('');
+    const [isTyping, setIsTyping]   = useState(false);
+    const [error, setError]         = useState('');
+    const bottomRef = useRef(null);
+    const inputRef  = useRef(null);
+
+    // Persist messages
+    useEffect(() => {
+        try { localStorage.setItem(storageKey, JSON.stringify(messages.slice(-40))); }
+        catch { /* storage full */ }
+    }, [messages, storageKey]);
+
+    // Auto-scroll to bottom
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages, isTyping]);
+
+    // Focus input when opened
+    useEffect(() => {
+        if (isOpen) setTimeout(() => inputRef.current?.focus(), 120);
+    }, [isOpen]);
+
+    const sendMessage = useCallback(async (text) => {
+        const trimmed = (text || inputText).trim();
+        if (!trimmed || isTyping) return;
+
+        setError('');
+        setInputText('');
+
+        const newMessages = [...messages, { role: 'user', content: trimmed }];
+        setMessages(newMessages);
+        setIsTyping(true);
+
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/chatbot/chat`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
+                body: JSON.stringify({ messages: newMessages.slice(-10), context: 'general' }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                setError(data.error || 'Something went wrong. Please try again.');
+                setMessages(newMessages); // remove user message on error? No — keep it
+            } else {
+                setMessages([...newMessages, { role: 'assistant', content: data.message }]);
+            }
+        } catch {
+            setError('Network error — please check your connection.');
+        } finally {
+            setIsTyping(false);
+        }
+    }, [inputText, isTyping, messages]);
+
+    const clearChat = () => {
+        setMessages([]);
+        localStorage.removeItem(storageKey);
+        setError('');
+    };
+
+    const hasMessages = messages.length > 0;
+
+    return (
+        <div className="border border-violet-500/20 rounded-2xl overflow-hidden bg-[#0d1117]">
+            {/* Header — always visible */}
+            <button
+                onClick={() => setIsOpen(v => !v)}
+                className="w-full flex items-center justify-between px-4 py-3 hover:bg-violet-500/5 transition-colors"
+            >
+                <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-700 flex items-center justify-center shadow shadow-violet-500/30">
+                        <Bot className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="text-left">
+                        <p className="text-sm font-bold text-white leading-none">MentorBot</p>
+                        <p className="text-[10px] text-emerald-400 flex items-center gap-1 mt-0.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                            AI Assistant · Always online
+                        </p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    {hasMessages && (
+                        <button
+                            onClick={e => { e.stopPropagation(); clearChat(); }}
+                            className="p-1 text-slate-600 hover:text-red-400 transition-colors"
+                            title="Clear chat"
+                        >
+                            <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                    )}
+                    <ChevronRight className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
+                </div>
+            </button>
+
+            {/* Expandable Chat Body */}
+            {isOpen && (
+                <div className="border-t border-white/5">
+                    {/* Messages area */}
+                    <div className="h-64 overflow-y-auto px-3 py-3 space-y-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
+                        {!hasMessages && (
+                            <div className="flex flex-col items-center justify-center h-full text-center gap-2 py-4">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                                    <Bot className="w-5 h-5 text-white" />
+                                </div>
+                                <p className="text-xs text-slate-400 font-medium">Hi {user?.firstName || 'there'}! 👋</p>
+                                <p className="text-[11px] text-slate-600 max-w-[180px]">I'm MentorBot — ask me anything about mentorship or your career goals.</p>
+                            </div>
+                        )}
+
+                        {messages.map((msg, i) => (
+                            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                {msg.role !== 'user' && (
+                                    <div className="w-5 h-5 rounded-md bg-gradient-to-br from-violet-600 to-indigo-700 flex items-center justify-center mr-1.5 mt-0.5 shrink-0">
+                                        <Bot className="w-3 h-3 text-white" />
+                                    </div>
+                                )}
+                                <div className={`max-w-[80%] rounded-xl px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap ${
+                                    msg.role === 'user'
+                                        ? 'bg-violet-600 text-white rounded-br-sm'
+                                        : 'bg-white/8 text-slate-200 border border-white/5 rounded-bl-sm'
+                                }`}>
+                                    {msg.content}
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Typing indicator */}
+                        {isTyping && (
+                            <div className="flex justify-start items-end gap-1.5">
+                                <div className="w-5 h-5 rounded-md bg-gradient-to-br from-violet-600 to-indigo-700 flex items-center justify-center shrink-0">
+                                    <Bot className="w-3 h-3 text-white" />
+                                </div>
+                                <div className="bg-white/8 border border-white/5 rounded-xl rounded-bl-sm px-3 py-2.5 flex items-center gap-1">
+                                    {[0, 1, 2].map(i => (
+                                        <span key={i} className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Error */}
+                        {error && (
+                            <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-[11px] text-red-400 flex items-start gap-2">
+                                <AlertCircle className="w-3 h-3 shrink-0 mt-0.5" />
+                                {error}
+                            </div>
+                        )}
+
+                        <div ref={bottomRef} />
+                    </div>
+
+                    {/* Quick replies — only when no messages */}
+                    {!hasMessages && !isTyping && (
+                        <div className="px-3 pb-2 flex flex-wrap gap-1.5">
+                            {QUICK_REPLIES.map(q => (
+                                <button
+                                    key={q}
+                                    onClick={() => sendMessage(q)}
+                                    className="text-[10px] px-2.5 py-1 bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 text-violet-300 rounded-full transition-all"
+                                >
+                                    {q}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Input row */}
+                    <div className="px-3 pb-3 flex items-center gap-2 border-t border-white/5 pt-2">
+                        <input
+                            ref={inputRef}
+                            value={inputText}
+                            onChange={e => setInputText(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
+                            placeholder="Ask MentorBot..."
+                            disabled={isTyping}
+                            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-violet-500/50 transition-colors disabled:opacity-50"
+                        />
+                        <button
+                            onClick={() => sendMessage()}
+                            disabled={!inputText.trim() || isTyping}
+                            className="w-8 h-8 rounded-xl bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all shadow shadow-violet-500/20 shrink-0"
+                        >
+                            <Send className="w-3.5 h-3.5 text-white" />
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
@@ -142,7 +399,9 @@ const MenteeDashboard = () => {
                 setSessions(hist.data?.data || []);
                 setRecentChats(Array.isArray(chats.data) ? chats.data : []);
                 setMentors(ment.data?.data || ment.data || []);
-                setRecommendedMentors(recs.data?.data?.map((m) => m.mentor) || []);
+                // New AI matching returns flat objects with matchScore/matchReasons/tag already merged
+                const recsData = recs.data?.data || [];
+                setRecommendedMentors(recsData.map(m => m.mentor ? { ...m.mentor, matchScore: m.matchScore, matchReasons: m.matchReasons, tag: m.tag } : m));
                 setAssignments(assign.data?.data || []);
             } catch (err) {
                 console.error("Dashboard fetch error:", err);
@@ -212,7 +471,7 @@ const MenteeDashboard = () => {
     if (rankScore >= 300) rankBadge = { label: 'Platinum', color: 'text-cyan-400', gradient: 'from-cyan-400 to-blue-500', icon: '💎' };
 
     if (isLoading) return (
-        <div className="min-h-screen bg-[#080c14] flex items-center justify-center">
+        <div className="flex items-center justify-center py-32">
             <div className="flex flex-col items-center gap-3">
                 <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
                 <p className="text-slate-400 text-sm">Loading your journey...</p>
@@ -221,14 +480,8 @@ const MenteeDashboard = () => {
     );
 
     return (
-        <div className="min-h-screen bg-[#080c14] text-white">
-            {/* Ambient */}
-            <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="absolute top-0 right-0 w-[600px] h-[400px] bg-violet-700/8 rounded-full blur-3xl translate-x-1/3 -translate-y-1/4" />
-                <div className="absolute bottom-0 left-0 w-[500px] h-[400px] bg-blue-700/8 rounded-full blur-3xl -translate-x-1/4" />
-            </div>
-
-            <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-8">
+        <div className="text-white">
+            <div className="max-w-7xl mx-auto">
                 {/* ── Header ── */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                     <div className="flex items-center gap-4">
@@ -253,19 +506,56 @@ const MenteeDashboard = () => {
                 )}
 
                 {/* ── Stats ── */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     {[
-                        { label: 'Hours Mentored', value: `${completedCount}h`, icon: Clock, gradient: 'from-blue-500 to-indigo-700' },
-                        { label: 'Total Score', value: rankScore, icon: Zap, gradient: 'from-emerald-500 to-teal-700' },
-                        { label: 'Rank', value: `${rankBadge.icon} ${rankBadge.label}`, icon: TrendingUp, gradient: rankBadge.gradient },
-                    ].map(({ label, value, icon: Icon, gradient }) => (
-                        <div key={label} className="relative overflow-hidden bg-white/5 border border-white/8 rounded-2xl p-5 hover:bg-white/10 transition-all group">
-                            <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full bg-gradient-to-br ${gradient} opacity-10 blur-xl`} />
-                            <div className={`inline-flex p-2.5 rounded-xl mb-3 bg-gradient-to-br ${gradient}`}>
-                                <Icon className="w-4 h-4 text-white" />
+                        {
+                            label: 'Sessions Done',
+                            value: completedCount,
+                            icon: CheckCircle,
+                            gradient: 'from-violet-500 to-purple-700',
+                            glow: 'violet',
+                            delta: completedCount > 0 ? `+${completedCount}` : null,
+                        },
+                        {
+                            label: 'XP Points',
+                            value: rankScore,
+                            icon: Zap,
+                            gradient: 'from-amber-400 to-orange-600',
+                            glow: 'amber',
+                            delta: rankScore > 0 ? 'earned' : null,
+                        },
+                        {
+                            label: 'Rank',
+                            value: `${rankBadge.icon} ${rankBadge.label}`,
+                            icon: TrendingUp,
+                            gradient: rankBadge.gradient,
+                            glow: 'emerald',
+                            delta: null,
+                        },
+                        {
+                            label: 'Upcoming',
+                            value: futureBookings.length,
+                            icon: Calendar,
+                            gradient: 'from-blue-500 to-indigo-700',
+                            glow: 'blue',
+                            delta: futureBookings.length > 0 ? 'scheduled' : 'none',
+                        },
+                    ].map(({ label, value, icon: Icon, gradient, glow, delta }) => (
+                        <div key={label} className="relative overflow-hidden bg-[#0d1117] border border-white/8 rounded-2xl p-5 hover:border-white/20 transition-all group cursor-default">
+                            {/* Glow orb */}
+                            <div className={`absolute -top-6 -right-6 w-20 h-20 rounded-full bg-gradient-to-br ${gradient} opacity-15 blur-2xl group-hover:opacity-30 transition-opacity duration-500`} />
+                            <div className="relative z-10">
+                                <div className={`inline-flex p-2.5 rounded-xl mb-3 bg-gradient-to-br ${gradient} shadow-lg`}>
+                                    <Icon className="w-4 h-4 text-white" />
+                                </div>
+                                <p className="text-slate-500 text-[11px] font-medium uppercase tracking-wider mb-1">{label}</p>
+                                <p className="text-2xl font-black text-white leading-none">{value}</p>
+                                {delta && (
+                                    <span className="inline-flex items-center gap-1 mt-2 text-[10px] font-bold text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2 py-0.5 rounded-full">
+                                        ↑ {delta}
+                                    </span>
+                                )}
                             </div>
-                            <p className="text-slate-500 text-xs mb-1">{label}</p>
-                            <p className="text-2xl font-bold text-white">{value}</p>
                         </div>
                     ))}
                 </div>
@@ -434,11 +724,16 @@ const MenteeDashboard = () => {
                         {recommendedMentors.length > 0 && (
                             <div>
                                 <h2 className="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
-                                    <Star className="w-4 h-4 text-amber-400" /> Recommended for You
+                                    <Sparkles className="w-4 h-4 text-amber-400" />
+                                    AI Recommended
+                                    <span className="text-[10px] bg-violet-500/20 text-violet-400 border border-violet-500/30 px-1.5 py-0.5 rounded-full font-bold">AI</span>
                                 </h2>
                                 <div className="space-y-3">
-                                    {recommendedMentors.slice(0, 2).map(m => <MentorCard key={m._id} mentor={m} />)}
+                                    {recommendedMentors.slice(0, 3).map(m => <MentorCard key={m._id} mentor={m} />)}
                                 </div>
+                                <Link to="/mentors" className="block mt-2">
+                                    <button className="w-full py-2 border border-violet-500/20 rounded-xl text-xs text-violet-400 hover:bg-violet-500/10 transition-colors">Browse All Mentors</button>
+                                </Link>
                             </div>
                         )}
 
@@ -488,7 +783,7 @@ const MenteeDashboard = () => {
                                         return (
                                             <div key={chat._id} className="p-3 flex items-center gap-2.5 hover:bg-white/5 cursor-pointer transition-colors" onClick={() => navigate('/chat')}>
                                                 <div className="w-9 h-9 rounded-full bg-white/10 flex-shrink-0 flex items-center justify-center font-bold text-slate-400 uppercase text-sm overflow-hidden">
-                                                    {other?.profileImage ? <img src={other.profileImage} alt="" className="w-full h-full object-cover" /> : (other?.firstName?.[0] || '?')}
+                                                    {other?.profileImage ? <img src={other.profileImage} alt="" className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${other.firstName}+${other.lastName}&background=random`; }} /> : (other?.firstName?.[0] || '?')}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <p className="text-sm font-semibold text-white truncate">{other?.firstName || 'User'} {other?.lastName || ''}</p>
@@ -506,9 +801,11 @@ const MenteeDashboard = () => {
                             </div>
                         </div>
 
+                        {/* ── AI MentorBot Chat Widget ── */}
+                        <AIChatWidget user={user} />
+
                         {/* Complaint Box */}
-                        <div className="pt-4 border-t border-white/10">
-                            <h2 className="text-sm font-semibold text-slate-300 mb-2">Support</h2>
+                        <div className="pt-2 border-t border-white/10">
                             <button onClick={() => setIsComplaintModalOpen(true)} className="w-full py-2.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-xl text-sm font-semibold text-red-400 transition-all flex items-center justify-center gap-2">
                                 <AlertCircle className="w-4 h-4" /> Report an Issue
                             </button>

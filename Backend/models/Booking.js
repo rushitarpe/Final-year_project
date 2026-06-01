@@ -29,6 +29,14 @@ const bookingSchema = new mongoose.Schema({
     },
     notes: {
         type: String,
+    },
+    aiSummary: {
+        type: String,   // AI-generated session summary (stored by chatbot/summarize endpoint)
+        default: null,
+    },
+    agenda: {
+        type: String,   // optional pre-session agenda
+        default: null,
     }
 }, {
     timestamps: true

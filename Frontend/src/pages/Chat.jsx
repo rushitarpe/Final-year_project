@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Send, Paperclip, MoreVertical, Video, Trash2, X, FileText, Image, Film, Music, Archive, Flag, BellOff } from 'lucide-react';
+import { Send, Paperclip, MoreVertical, Video, Trash2, X, FileText, Image, Film, Music, Archive, Flag, BellOff, Search } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -210,8 +210,8 @@ const Chat = () => {
     const isFileMessage = (msg) => msg.messageType === 'file' || msg.content?.startsWith('📎 ');
 
     return (
-        <div className="h-[calc(100vh-80px)] bg-slate-50 dark:bg-slate-950 p-4 md:p-6 lg:p-8">
-            <div className="max-w-7xl mx-auto h-full flex bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800">
+        <div className="h-[calc(100vh-120px)] bg-slate-50 dark:bg-[#080c14] p-2 md:p-4">
+            <div className="max-w-7xl mx-auto h-full flex bg-white dark:bg-[#0d1117] rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/8">
                 
                 {/* Conversations Sidebar */}
                 <div className="w-80 border-r border-slate-100 dark:border-slate-800 flex flex-col hidden lg:flex">

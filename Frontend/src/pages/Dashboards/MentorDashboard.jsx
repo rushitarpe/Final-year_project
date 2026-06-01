@@ -189,7 +189,7 @@ const MentorDashboard = () => {
     ];
 
     if (isLoading) return (
-        <div className="min-h-screen bg-[#080c14] flex items-center justify-center">
+        <div className="flex items-center justify-center py-32">
             <div className="flex flex-col items-center gap-3">
                 <div className="w-12 h-12 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
                 <p className="text-slate-400 text-sm">Loading your dashboard...</p>
@@ -198,14 +198,8 @@ const MentorDashboard = () => {
     );
 
     return (
-        <div className="min-h-screen bg-[#080c14] text-white">
-            {/* Ambient backgrounds */}
-            <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="absolute top-0 left-0 w-[600px] h-[400px] bg-violet-700/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-                <div className="absolute bottom-0 right-0 w-[500px] h-[400px] bg-emerald-700/8 rounded-full blur-3xl translate-x-1/4" />
-            </div>
-
-            <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-8">
+        <div className="text-white">
+            <div className="max-w-7xl mx-auto">
                 {/* ── Header ── */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                     <div className="flex items-center gap-4">
@@ -227,18 +221,53 @@ const MentorDashboard = () => {
                 {/* ── Stats row ── */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     {[
-                        { label: 'Total Sessions', value: sessions.length + upcoming.length, icon: Calendar, gradient: 'from-violet-500 to-purple-700' },
-                        { label: 'Total Earnings', value: `$${earnings.toLocaleString()}`, icon: DollarSign, gradient: 'from-emerald-500 to-teal-700' },
-                        { label: 'Active Students', value: uniqueStudents.length, icon: Users, gradient: 'from-blue-500 to-indigo-700' },
-                        { label: 'Rating', value: '4.9/5 ⭐', icon: Star, gradient: 'from-amber-500 to-orange-600' },
-                    ].map(({ label, value, icon: Icon, gradient }) => (
-                        <div key={label} className="relative overflow-hidden bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-all group">
-                            <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full bg-gradient-to-br ${gradient} opacity-10 blur-xl group-hover:opacity-20 transition-opacity`} />
-                            <div className={`inline-flex p-2.5 rounded-xl mb-3 bg-gradient-to-br ${gradient}`}>
-                                <Icon className="w-4 h-4 text-white" />
+                        {
+                            label: 'Total Sessions',
+                            value: sessions.length + upcoming.length,
+                            icon: Calendar,
+                            gradient: 'from-violet-500 to-purple-700',
+                            delta: sessions.length > 0 ? `${sessions.length} done` : null,
+                        },
+                        {
+                            label: 'Total Earnings',
+                            value: `₹${earnings.toLocaleString('en-IN')}`,
+                            icon: DollarSign,
+                            gradient: 'from-emerald-500 to-teal-700',
+                            delta: earnings > 0 ? 'earned' : null,
+                        },
+                        {
+                            label: 'Active Students',
+                            value: uniqueStudents.length,
+                            icon: Users,
+                            gradient: 'from-blue-500 to-indigo-700',
+                            delta: uniqueStudents.length > 0 ? 'active' : null,
+                        },
+                        {
+                            label: 'Pending Requests',
+                            value: pending.length,
+                            icon: Star,
+                            gradient: pending.length > 0 ? 'from-rose-500 to-red-700' : 'from-amber-400 to-orange-600',
+                            delta: pending.length > 0 ? 'needs action' : null,
+                        },
+                    ].map(({ label, value, icon: Icon, gradient, delta }) => (
+                        <div key={label} className="relative overflow-hidden bg-[#0d1117] border border-white/8 rounded-2xl p-5 hover:border-white/20 transition-all group cursor-default">
+                            <div className={`absolute -top-6 -right-6 w-20 h-20 rounded-full bg-gradient-to-br ${gradient} opacity-15 blur-2xl group-hover:opacity-30 transition-opacity duration-500`} />
+                            <div className="relative z-10">
+                                <div className={`inline-flex p-2.5 rounded-xl mb-3 bg-gradient-to-br ${gradient} shadow-lg`}>
+                                    <Icon className="w-4 h-4 text-white" />
+                                </div>
+                                <p className="text-slate-500 text-[11px] font-medium uppercase tracking-wider mb-1">{label}</p>
+                                <p className="text-2xl font-black text-white leading-none">{value}</p>
+                                {delta && (
+                                    <span className={`inline-flex items-center gap-1 mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                                        label === 'Pending Requests' && pending.length > 0
+                                            ? 'text-rose-400 bg-rose-400/10 border-rose-400/20'
+                                            : 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
+                                    }`}>
+                                        {label === 'Pending Requests' && pending.length > 0 ? '!' : '↑'} {delta}
+                                    </span>
+                                )}
                             </div>
-                            <p className="text-slate-500 text-xs mb-1">{label}</p>
-                            <p className="text-2xl font-bold text-white">{value}</p>
                         </div>
                     ))}
                 </div>
@@ -314,7 +343,7 @@ const MentorDashboard = () => {
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <span className="text-emerald-400 font-semibold text-sm">+$120</span>
+                                                <span className="text-emerald-400 font-semibold text-sm">+₹1,500</span>
                                                 <span className="text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full px-2 py-0.5">Done</span>
                                             </div>
                                         </div>

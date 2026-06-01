@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Star, Clock, MapPin, CheckCircle, Play, MessageSquare, Video, Calendar, ChevronLeft } from 'lucide-react';
+import { Star, Clock, MapPin, CheckCircle, Play, MessageSquare, Video, Calendar, ChevronLeft, Briefcase, GraduationCap, Award, Target, Users } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/Input';
+import UserAvatar from '../components/ui/UserAvatar';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { toast } from 'react-hot-toast';
@@ -159,17 +160,14 @@ const MentorProfile = () => {
                         <div className="h-40 bg-gradient-to-r from-primary-600 to-indigo-700" />
                         <div className="px-8 pb-8">
                             <div className="relative -mt-16 flex flex-col sm:flex-row gap-6 items-start sm:items-end mb-6">
-                                {mentor.profileImage && mentor.profileImage !== 'default.jpg' ? (
-                                    <img
-                                        src={mentor.profileImage}
-                                        alt={`${mentor.firstName} ${mentor.lastName}`}
-                                        className="w-32 h-32 rounded-2xl object-cover border-4 border-white dark:border-slate-800 shadow-xl bg-slate-100"
-                                    />
-                                ) : (
-                                    <div className="w-32 h-32 rounded-2xl border-4 border-white dark:border-slate-800 shadow-xl flex items-center justify-center bg-primary-100 dark:bg-primary-900/40 text-primary-500 dark:text-primary-400 text-6xl font-bold uppercase overflow-hidden">
-                                        {mentor.firstName?.[0]}
-                                    </div>
-                                )}
+                                <UserAvatar
+                                    src={mentor.profileImage}
+                                    firstName={mentor.firstName}
+                                    lastName={mentor.lastName}
+                                    size="w-32 h-32"
+                                    shape="rounded-2xl"
+                                    className="border-4 border-white dark:border-slate-800 shadow-xl text-5xl"
+                                />
                                 <div className="flex-1">
                                     <h1 className="text-3xl font-bold flex items-center gap-2">
                                         {mentor.firstName} {mentor.lastName}
@@ -181,15 +179,15 @@ const MentorProfile = () => {
 
                             <div className="flex flex-wrap gap-6 text-sm text-slate-500 dark:text-slate-400">
                                 <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full">
-                                    <MapPin className="w-4 h-4" /> Global / Remote
+                                    <MapPin className="w-4 h-4" /> {mentor.location?.city ? `${mentor.location.city}, ${mentor.location.state || ''}` : 'Remote'}
                                 </div>
                                 <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full">
                                     <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                                    <span className="font-bold text-slate-900 dark:text-white">{mentor.rating || 0}</span>
-                                    <span>({mentor.reviews || 0} reviews)</span>
+                                    <span className="font-bold text-slate-900 dark:text-white">{(mentor.averageRating || mentor.rating || 0).toFixed(1)}</span>
+                                    <span>({Array.isArray(mentor.reviews) ? mentor.reviews.length : mentor.reviews || 0} reviews)</span>
                                 </div>
                                 <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-full">
-                                    <Clock className="w-4 h-4" /> Actively Mentoring
+                                    <Clock className="w-4 h-4" /> {mentor.yearsOfExperience || 0}+ years experience
                                 </div>
                             </div>
                         </div>
@@ -224,7 +222,33 @@ const MentorProfile = () => {
                             </>
                         )}
 
-                        {mentor.introVideo && (
+                        {(mentor.mentorshipTypes || []).length > 0 && (
+                            <>
+                                <h3 className="text-sm font-bold uppercase tracking-widest text-emerald-500 mb-4 mt-4">Mentorship Types</h3>
+                                <div className="flex flex-wrap gap-2 mb-8">
+                                    {mentor.mentorshipTypes.map((type) => (
+                                        <span key={type} className="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-4 py-2 rounded-xl text-sm font-semibold border border-emerald-500/10">
+                                            <Target className="w-4 h-4 inline-block mr-1 align-text-bottom" /> {type}
+                                        </span>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+
+                        {(mentor.targetMenteeLevel || []).length > 0 && (
+                            <>
+                                <h3 className="text-sm font-bold uppercase tracking-widest text-purple-500 mb-4 mt-4">Targeted Mentees</h3>
+                                <div className="flex flex-wrap gap-2 mb-8">
+                                    {mentor.targetMenteeLevel.map((level) => (
+                                        <span key={level} className="bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 px-4 py-2 rounded-xl text-sm font-semibold border border-purple-500/10">
+                                            <Users className="w-4 h-4 inline-block mr-1 align-text-bottom" /> {level}
+                                        </span>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+
+                        {(mentor.introVideoUrl || mentor.introVideo) && (
                             <div 
                                 className="relative group cursor-pointer rounded-2xl overflow-hidden shadow-lg aspect-video"
                                 onClick={() => setIsVideoModalOpen(true)}
@@ -247,12 +271,84 @@ const MentorProfile = () => {
                         )}
                     </Card>
 
+                    {/* Professional Background Section */}
+                    {((mentor.employment?.length > 0) || (mentor.education?.length > 0) || (mentor.certifications?.length > 0)) && (
+                        <Card className="p-8 bg-white dark:bg-slate-900 border-none shadow-xl">
+                            <h2 className="text-2xl font-bold mb-8">Professional Background</h2>
+
+                            {mentor.employment?.length > 0 && (
+                                <div className="mb-10">
+                                    <h3 className="text-lg font-bold flex items-center gap-2 mb-6 text-slate-800 dark:text-white">
+                                        <Briefcase className="w-5 h-5 text-primary-500" />
+                                        Experience
+                                    </h3>
+                                    <div className="space-y-6">
+                                        {mentor.employment.map((job, idx) => (
+                                            <div key={idx} className="relative pl-8 before:absolute before:left-3 before:top-2 before:w-0.5 before:h-full before:bg-slate-200 dark:before:bg-slate-800 last:before:hidden">
+                                                <div className="absolute left-1 top-1.5 w-4 h-4 rounded-full bg-primary-100 dark:bg-primary-900/50 border-2 border-primary-500 z-10" />
+                                                <h4 className="font-bold text-lg text-slate-900 dark:text-white">{job.title}</h4>
+                                                <p className="text-primary-600 dark:text-primary-400 font-medium mb-1">{job.company}</p>
+                                                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
+                                                    {job.startDate ? new Date(job.startDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short' }) : 'Unknown'} - {job.current ? 'Present' : (job.endDate ? new Date(job.endDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short' }) : 'Present')}
+                                                </p>
+                                                {job.description && <p className="text-slate-600 dark:text-slate-300 text-sm whitespace-pre-wrap">{job.description}</p>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {mentor.education?.length > 0 && (
+                                <div className="mb-10">
+                                    <h3 className="text-lg font-bold flex items-center gap-2 mb-6 text-slate-800 dark:text-white">
+                                        <GraduationCap className="w-5 h-5 text-primary-500" />
+                                        Education
+                                    </h3>
+                                    <div className="space-y-6">
+                                        {mentor.education.map((edu, idx) => (
+                                            <div key={idx} className="relative pl-8 before:absolute before:left-3 before:top-2 before:w-0.5 before:h-full before:bg-slate-200 dark:before:bg-slate-800 last:before:hidden">
+                                                <div className="absolute left-1 top-1.5 w-4 h-4 rounded-full bg-primary-100 dark:bg-primary-900/50 border-2 border-primary-500 z-10" />
+                                                <h4 className="font-bold text-lg text-slate-900 dark:text-white">{edu.institution}</h4>
+                                                <p className="text-primary-600 dark:text-primary-400 font-medium mb-1">{edu.degree} in {edu.fieldOfStudy}</p>
+                                                <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
+                                                    {edu.startYear} - {edu.currentlyEnrolled ? 'Present' : edu.endYear}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {mentor.certifications?.length > 0 && (
+                                <div>
+                                    <h3 className="text-lg font-bold flex items-center gap-2 mb-6 text-slate-800 dark:text-white">
+                                        <Award className="w-5 h-5 text-primary-500" />
+                                        Certifications
+                                    </h3>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {mentor.certifications.map((cert, idx) => (
+                                            <div key={idx} className="p-4 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+                                                <h4 className="font-bold text-slate-900 dark:text-white">{cert.name}</h4>
+                                                <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">{cert.issuingBody}</p>
+                                                {cert.credentialUrl && (
+                                                    <a href={cert.credentialUrl} target="_blank" rel="noopener noreferrer" className="text-primary-500 text-sm font-medium hover:underline inline-flex items-center gap-1">
+                                                        View Credential <ChevronLeft className="w-3 h-3 rotate-180" />
+                                                    </a>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </Card>
+                    )}
+
                     {/* Reviews Section */}
                     <Card className="p-8 bg-white dark:bg-slate-900 border-none shadow-xl">
                         <div className="flex items-center justify-between mb-8">
                             <h2 className="text-2xl font-bold flex items-center gap-3">
                                 <Star className="w-8 h-8 text-yellow-500 fill-yellow-500" />
-                                Student Reviews ({mentor.reviews || 0})
+                                Student Reviews ({Array.isArray(mentor.reviews) ? mentor.reviews.length : mentor.reviews || 0})
                             </h2>
                         </div>
 
@@ -299,15 +395,14 @@ const MentorProfile = () => {
                                     <div key={review._id} className="pb-8 border-b border-slate-100 dark:border-slate-800 last:border-none">
                                         <div className="flex items-start justify-between mb-4">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-full ring-2 ring-primary-500/20 overflow-hidden bg-slate-100">
-                                                    {review.student?.profileImage ? (
-                                                        <img src={review.student.profileImage} alt="" className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center font-bold text-slate-400 uppercase">
-                                                            {review.student?.firstName?.[0] || '?'}
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                <UserAvatar
+                                                    src={review.student?.profileImage}
+                                                    firstName={review.student?.firstName}
+                                                    lastName={review.student?.lastName}
+                                                    size="w-12 h-12"
+                                                    shape="rounded-full"
+                                                    className="text-base"
+                                                />
                                                 <div>
                                                     <h4 className="font-bold text-slate-900 dark:text-white">
                                                         {review.student?.firstName} {review.student?.lastName}
@@ -340,8 +435,8 @@ const MentorProfile = () => {
                     <Card className="p-8 bg-white dark:bg-slate-900 border-none shadow-xl sticky top-24">
                         <div className="mb-8 pb-8 border-b border-slate-100 dark:border-slate-800">
                             <div className="flex items-baseline gap-1">
-                                <span className="text-4xl font-bold text-slate-900 dark:text-white">₹{mentor.hourlyRate}</span>
-                                <span className="text-slate-500 font-medium">/ hour</span>
+                                <span className="text-4xl font-bold text-slate-900 dark:text-white">{(mentor.sessionPrice || mentor.hourlyRate || 0) === 0 ? 'Free' : `₹${(mentor.sessionPrice || mentor.hourlyRate || 0).toLocaleString('en-IN')}`}</span>
+                                <span className="text-slate-500 font-medium">/ session ({mentor.sessionDuration || 60} min)</span>
                             </div>
                         </div>
 
@@ -424,9 +519,9 @@ const MentorProfile = () => {
                 title={`${mentor.firstName}'s Introduction`}
             >
                 <div className="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
-                    {mentor.introVideo ? (
+                    {(mentor.introVideoUrl || mentor.introVideo) ? (
                         <video
-                            src={mentor.introVideo}
+                            src={mentor.introVideoUrl || mentor.introVideo}
                             controls
                             autoPlay
                             className="w-full h-full object-contain"

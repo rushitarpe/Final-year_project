@@ -5,11 +5,11 @@ const crypto = require('crypto');
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        required: [true, 'Please add a first name'],
+        default: '',
     },
     lastName: {
         type: String,
-        required: [true, 'Please add a last name'],
+        default: '',
     },
     email: {
         type: String,
@@ -22,9 +22,9 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Please add a password'],
         minlength: 6,
         select: false,
+        default: null,
     },
     role: {
         type: String,
@@ -33,10 +33,17 @@ const userSchema = new mongoose.Schema({
     },
     profileImage: {
         type: String,
-        default: 'default.jpg',
+        default: '',
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+    // ── OTP Email Verification Fields ──────────────────────────────
+    otpHash: { type: String, select: false, default: null },
+    otpExpiry: { type: Date, select: false, default: null },
+    otpVerified: { type: Boolean, select: false, default: false },
+    otpAttempts: { type: Number, select: false, default: 0 },
+    emailVerified: { type: Boolean, default: false },
+    // ───────────────────────────────────────────────────────────────
     createdAt: {
         type: Date,
         default: Date.now,
@@ -48,9 +55,9 @@ const userSchema = new mongoose.Schema({
 });
 
 // Encrypt password using bcrypt
-userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
-        next();
+userSchema.pre('save', async function () {
+    if (!this.isModified('password') || !this.password) {
+        return;
     }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);

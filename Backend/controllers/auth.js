@@ -6,9 +6,34 @@ const admin = require('firebase-admin');
 const { uploadToCloudinary } = require('../services/cloudinary');
 const crypto = require('crypto');
 
-// Note: To use Firebase Admin, insure FIREBASE_SERVICE_ACCOUNT is configured.
+// Initialize Firebase Admin SDK
 if (!admin.apps.length) {
-    admin.initializeApp();
+    try {
+        // Option 1: Use service account JSON file (set GOOGLE_APPLICATION_CREDENTIALS env var)
+        // Option 2: Use service account JSON inline from env
+        if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+            const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount),
+            });
+            console.log('Firebase Admin initialized with service account JSON');
+        } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+            admin.initializeApp({
+                credential: admin.credential.applicationDefault(),
+            });
+            console.log('Firebase Admin initialized with application default credentials');
+        } else {
+            // Fallback: initialize with project ID only (works for ID token verification)
+            admin.initializeApp({
+                projectId: process.env.FIREBASE_PROJECT_ID || 'guideme-e786c',
+            });
+            console.log('Firebase Admin initialized with project ID only');
+        }
+    } catch (err) {
+        console.error('Firebase Admin initialization error:', err.message);
+        // Still initialize to prevent crash, but Google Sign-in may fail
+        admin.initializeApp();
+    }
 }
 
 // Get token from model, create cookie and send response
@@ -199,7 +224,6 @@ exports.updateDetails = async (req, res, next) => {
 
         const user = await Model.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
             new: true,
-            runValidators: true
         });
 
         res.status(200).json({
@@ -247,21 +271,66 @@ exports.forgotPassword = async (req, res, next) => {
 
         await user.save({ validateBeforeSave: false });
 
-        // Create reset url
-        // In a real app we'd email this. For simplicity in dev, we return it in the response 
-        // Or if frontend handles it, the link should go to frontend route like /reset-password/:token
-        // But we will just return it so the API can be manually verified.
-        // If frontend is deployed at localhost:5173 
-        const resetUrl = `${req.protocol}://${req.get('host').replace(req.get('port') || '5000', '5173')}/reset-password/${resetToken}`;
+        // Build the frontend reset URL
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
+
+        // Send email with the reset link
+        const nodemailer = require('nodemailer');
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS,
+            },
+        });
+
+        const mailOptions = {
+            from: `"${process.env.FROM_NAME || 'GuideMe'}" <${process.env.SMTP_USER}>`,
+            to: user.email,
+            subject: 'GuideMe — Password Reset Request',
+            html: `
+                <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 32px; background: #f8fafc; border-radius: 16px;">
+                    <h2 style="color: #1e293b; margin-bottom: 16px;">Password Reset</h2>
+                    <p style="color: #475569; font-size: 15px; line-height: 1.6;">
+                        Hi <strong>${user.firstName || 'there'}</strong>,<br/>
+                        You requested a password reset for your GuideMe account. Click the button below to set a new password:
+                    </p>
+                    <div style="text-align: center; margin: 28px 0;">
+                        <a href="${resetUrl}" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 15px;">
+                            Reset Password
+                        </a>
+                    </div>
+                    <p style="color: #94a3b8; font-size: 13px;">This link expires in <strong>10 minutes</strong>. If you didn't request this, please ignore this email.</p>
+                    <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+                    <p style="color: #cbd5e1; font-size: 11px; text-align: center;">GuideMe — AI-Powered Mentorship Platform</p>
+                </div>
+            `,
+        };
+
+        await transporter.sendMail(mailOptions);
 
         res.status(200).json({
             success: true,
-            data: 'Password reset link generated',
-            resetToken, // Returning for dev purposes
-            resetUrl
+            data: 'Password reset email sent successfully'
         });
     } catch (err) {
-        next(err);
+        console.error('ForgotPassword error:', err.message || err);
+        // If email send fails, clear the reset token from the user
+        try {
+            const failedUser = await User.findOne({ email: req.body.email });
+            if (failedUser) {
+                failedUser.resetPasswordToken = undefined;
+                failedUser.resetPasswordExpire = undefined;
+                await failedUser.save({ validateBeforeSave: false });
+            }
+        } catch (cleanupErr) {
+            console.error('Cleanup error:', cleanupErr);
+        }
+        return res.status(500).json({
+            success: false,
+            error: 'Failed to send password reset email. Please try again later.'
+        });
     }
 };
 

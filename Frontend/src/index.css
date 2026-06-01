@@ -10,6 +10,42 @@
   body {
     @apply bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-50;
   }
+
+  /* ── Global dark-theme select / option styling ───────────────── */
+  select {
+    /* Make native arrow use a light chevron on dark bg */
+    @apply appearance-none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 14px 14px;
+    padding-right: 2.5rem !important;
+  }
+
+  /* Option elements inherit from the select, but need explicit bg
+     for Firefox and Chromium. These can't be styled the same way
+     on all browsers, so we set a safe dark fallback. */
+  select option {
+    background-color: #0d1117;
+    color: #e2e8f0;
+    font-size: 0.875rem;
+  }
+
+  /* ── Styled scrollbar (dark) ─────────────────────────────────── */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.4);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.5);
+  }
 }
 
 @layer utilities {
@@ -19,5 +55,34 @@
   
   .glass-card-dark {
     @apply bg-black/20 backdrop-blur-lg border border-white/10 shadow-2xl;
+  }
+
+  /* Hide scrollbar but keep scroll behaviour */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Dark-theme select wrapper — apply to any <select> inside a form
+     that uses the dark dashboard palette */
+  .select-dark {
+    background-color: rgba(255,255,255,0.05) !important;
+    color: #f1f5f9 !important;
+    border-color: rgba(255,255,255,0.1) !important;
+  }
+
+  .select-dark option {
+    background-color: #0d1117 !important;
+    color: #e2e8f0 !important;
+  }
+
+  /* Focused select ring override */
+  .select-dark:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(139,92,246,0.5);
+    border-color: transparent !important;
   }
 }

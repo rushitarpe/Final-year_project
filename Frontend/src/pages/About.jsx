@@ -17,19 +17,19 @@ const TEAM = [
     },
     {
         name: 'Umang Gachke',
-        role: 'Backend Engineer',
+        role: 'Backend Developer',
         image: null,
         bio: 'Building secure, robust, and scalable architectures for real-time services.',
     },
     {
         name: 'Rugved Wakekar',
-        role: 'Backend Engineer',
+        role: 'Backend Developer',
         image: null,
         bio: 'Creating beautiful, accessible, and intuitive user experiences.',
     },
     {
         name: 'Akshay Barse',
-        role: 'Growth Lead',
+        role: 'UI/UX Developer',
         image: null,
         bio: 'Ensuring global reach and community success for our mentees.',
     }

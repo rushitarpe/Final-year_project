@@ -38,7 +38,7 @@ const recentActivity = [
     { text: 'New mentor registered', time: '2m ago', color: 'bg-purple-500' },
     { text: 'Session completed by John', time: '15m ago', color: 'bg-green-500' },
     { text: 'New report flagged for review', time: '32m ago', color: 'bg-red-500' },
-    { text: 'Revenue milestone: $840k reached', time: '1h ago', color: 'bg-amber-500' },
+    { text: 'Revenue milestone: ₹8.4L reached', time: '1h ago', color: 'bg-amber-500' },
     { text: 'New student batch joined', time: '2h ago', color: 'bg-blue-500' },
 ];
 
@@ -127,14 +127,8 @@ const AdminDashboard = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#080c14] text-white selection:bg-indigo-500/30">
-            {/* Ambient background */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px]" />
-                <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[120px]" />
-            </div>
-
-            <div className="relative z-10 max-w-[1600px] mx-auto px-6 py-8">
+        <div className="text-white selection:bg-indigo-500/30">
+            <div className="max-w-[1600px] mx-auto">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div>
@@ -184,7 +178,7 @@ const AdminDashboard = () => {
                             <KPICard title="Total Users" value={(realStats?.totalUsers || 0).toLocaleString()} change={12} icon={Users} gradient="bg-gradient-to-br from-blue-500 to-indigo-600" />
                             <KPICard title="Total Mentors" value={(realStats?.totalMentors || 0).toLocaleString()} change={8} icon={Activity} gradient="bg-gradient-to-br from-emerald-500 to-teal-600" />
                             <KPICard title="Total Sessions" value={(realStats?.totalSessions || 0).toLocaleString()} change={15} icon={TrendingUp} gradient="bg-gradient-to-br from-violet-500 to-purple-600" />
-                            <KPICard title="Revenue" value={`$${(realStats?.revenue || 0).toLocaleString()}`} change={22} icon={TrendingUp} gradient="bg-gradient-to-br from-amber-500 to-orange-600" />
+                            <KPICard title="Revenue" value={`₹${(realStats?.revenue || 0).toLocaleString('en-IN')}`} change={22} icon={TrendingUp} gradient="bg-gradient-to-br from-amber-500 to-orange-600" />
                         </div>
 
                         {/* Charts Section */}

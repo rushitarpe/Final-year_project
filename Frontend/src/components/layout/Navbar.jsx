@@ -5,6 +5,7 @@ import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown, Sparkles } from 'l
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import UserAvatar from '../ui/UserAvatar';
 
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -86,13 +87,14 @@ export const Navbar = () => {
                                         : 'border-transparent hover:bg-slate-50 dark:hover:bg-white/5'
                                 }`}
                             >
-                                <div className="w-8 h-8 rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold overflow-hidden ring-2 ring-violet-500/20">
-                                    {user.profileImage ? (
-                                        <img src={user.profileImage} alt={user.firstName} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <User size={16} />
-                                    )}
-                                </div>
+                                <UserAvatar
+                                    src={user.profileImage}
+                                    firstName={user.firstName}
+                                    lastName={user.lastName}
+                                    size="w-8 h-8"
+                                    shape="rounded-full"
+                                    className="ring-2 ring-violet-500/20 text-xs"
+                                />
                                 <span className="text-sm font-bold text-slate-700 dark:text-slate-300 capitalize">{user.firstName}</span>
                                 <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
                             </button>

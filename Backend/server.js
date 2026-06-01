@@ -12,6 +12,13 @@ dotenv.config();
 // Connect to database
 connectDB();
 
+// ── Startup checks ─────────────────────────────────────────────────────────
+if (!process.env.GEMINI_API_KEY) {
+    console.warn('⚠️  [Startup] GEMINI_API_KEY is not set — AI chatbot and matching features will not work.');
+} else {
+    console.log('✅ [Startup] GEMINI_API_KEY detected — AI features enabled.');
+}
+
 const app = express();
 const server = http.createServer(app);
 
@@ -54,6 +61,7 @@ const complaints = require('./routes/complaints');
 const assignments = require('./routes/assignments');
 const stats = require('./routes/stats');
 const resume = require('./routes/resume');
+const leaderboard = require('./routes/leaderboard');
 
 app.use('/api/auth', auth);
 app.use('/api/upload', upload);
@@ -70,6 +78,7 @@ app.use('/api/complaints', complaints);
 app.use('/api/assignments', assignments);
 app.use('/api/stats', stats);
 app.use('/api/resume', resume);
+app.use('/api/leaderboard', leaderboard);
 
 // Basic route
 app.get('/', (req, res) => {
