@@ -14,7 +14,7 @@ const Landing = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/stats');
+                const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/stats`);
                 const data = await res.json();
                 if (data.success) {
                     setStats({
