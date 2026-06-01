@@ -6,6 +6,30 @@ const morgan = require('morgan');
 const http = require('http');
 const connectDB = require('./config/db');
 
+// ── CORS allowed origins ────────────────────────────────────────────────────
+// In production set CORS_ORIGIN to your Vercel URL (comma-separated for multiple).
+// In development every localhost origin is allowed automatically.
+const ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://localhost:4173',
+    ...(process.env.CORS_ORIGIN
+        ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
+        : []
+    ),
+];
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        // Allow requests with no origin (curl, Postman, server-to-server)
+        if (!origin) return callback(null, true);
+        if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+        callback(new Error(`CORS: origin '${origin}' not allowed`));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
 // Load env vars
 dotenv.config();
 
@@ -27,10 +51,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
-app.use(cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // pre-flight for all routes
 
 // Set security headers
-app.use(helmet());
+// cross-origin-resource-policy: cross-origin lets Cloudinary images load in the browser
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginEmbedderPolicy: false,
+}));
 
 // Rate limiting
 const rateLimit = require('express-rate-limit');
