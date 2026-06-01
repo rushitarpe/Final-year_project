@@ -1,0 +1,14 @@
+{
+  "name": "final-year-project-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root package.json to proxy install and start commands to the Backend subdirectory on Render",
+  "scripts": {
+    "postinstall": "npm install --prefix Backend",
+    "build": "echo Root build completed",
+    "start": "npm start --prefix Backend"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
