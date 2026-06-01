@@ -52,7 +52,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // pre-flight for all routes
+app.options('/*any', cors(corsOptions)); // pre-flight for all routes
 
 // Set security headers
 // cross-origin-resource-policy: cross-origin lets Cloudinary images load in the browser
